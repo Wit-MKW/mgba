@@ -12,6 +12,8 @@ CXX_GUARD_START
 
 #include <mgba/core/interface.h>
 #include <mgba/core/timing.h>
+#include <mgba-util/socket.h>
+#include "third-party/libmobile/mobile.h"
 
 #define GBA_IDLE_LOOP_NONE 0xFFFFFFFF
 
@@ -127,6 +129,27 @@ struct GBASIODriver {
 	uint8_t (*finishNormal8)(struct GBASIODriver* driver);
 	uint32_t (*finishNormal32)(struct GBASIODriver* driver);
 };
+
+void GBASIOJOYCreate(struct GBASIODriver* sio);
+
+struct GBASIOMobileAdapter {
+	struct GBASIODriver d;
+	struct mTimingEvent event;
+	struct mobile_adapter *adapter;
+	uint8_t config[MOBILE_CONFIG_SIZE];
+	struct {
+		Socket fd;
+		enum mobile_addrtype addrtype;
+		unsigned bindport;
+	} socket[MOBILE_MAX_CONNECTIONS];
+	int32_t timeLatch[MOBILE_MAX_TIMERS];
+	int serial;
+	uint8_t nextData[4];
+	char number[2][MOBILE_MAX_NUMBER_SIZE + 1];
+};
+
+void GBASIOMobileAdapterCreate(struct GBASIOMobileAdapter*);
+void GBASIOMobileAdapterUpdate(struct GBASIOMobileAdapter*);
 
 enum GBASIOBattleChipGateFlavor {
 	GBA_FLAVOR_BATTLECHIP_GATE = 4,

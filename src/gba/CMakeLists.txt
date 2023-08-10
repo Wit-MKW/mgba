@@ -41,6 +41,7 @@ set(SIO_FILES
 
 set(EXTRA_FILES
 	extra/battlechip.c
+	extra/mobile.c
 	extra/proxy.c)
 
 set(DEBUGGER_FILES

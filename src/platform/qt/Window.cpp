@@ -50,6 +50,7 @@
 #include "MemoryAccessLogView.h"
 #include "MemorySearch.h"
 #include "MemoryView.h"
+#include "MobileAdapterView.h"
 #include "MultiplayerController.h"
 #include "OverrideView.h"
 #include "ObjView.h"
@@ -1558,7 +1559,10 @@ void Window::setupMenu(QMenuBar* menubar) {
 #endif
 
 #ifdef M_CORE_GBA
-	auto bcGate = addGameAction(tr("BattleChip Gate..."), "bcGate", openControllerTView<BattleChipView>(this), "emu");
+	Action* mbAdapter = addGameAction(tr("Mobile Game Boy Adapter..."), "mbAdapter", openControllerTView<MobileAdapterView>(this), "emu");
+	m_platformActions.insert(mPLATFORM_GBA, mbAdapter);
+	
+	Action* bcGate = addGameAction(tr("BattleChip Gate..."), "bcGate", openControllerTView<BattleChipView>(this), "emu");
 	m_platformActions.insert(mPLATFORM_GBA, bcGate);
 #endif
 

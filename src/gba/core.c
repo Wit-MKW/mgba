@@ -1008,6 +1008,10 @@ static void _GBACoreSetPeripheral(struct mCore* core, int type, void* periph) {
 	case mPERIPH_GBA_LINK_PORT:
 		GBASIOSetDriver(&gba->sio, periph);
 		break;
+	case mPERIPH_GBA_MOBILE_ADAPTER:
+		GBASIOSetDriver(&gba->sio, periph, SIO_NORMAL_8);
+		GBASIOSetDriver(&gba->sio, periph, SIO_NORMAL_32);
+		break;
 	default:
 		return;
 	}

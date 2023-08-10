@@ -781,6 +781,12 @@ if (USE_DISCORD_RPC)
 	include_directories(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/src/third-party/discord-rpc/include)
 endif()
 
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src/third-party/libmobile libmobile EXCLUDE_FROM_ALL)
+include_directories(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/src/third-party/libmobile)
+list(APPEND DEPENDENCY_LIB libmobile)
+file(GLOB LIBMOBILE_SRC ${CMAKE_CURRENT_SOURCE_DIR}/src/third-party/libmobile/*.c)
+list(APPEND THIRD_PARTY_SRC ${LIBMOBILE_SRC})
+
 if(ENABLE_SCRIPTING)
 	list(APPEND ENABLES SCRIPTING)
 	find_feature(USE_JSON_C "json-c")
