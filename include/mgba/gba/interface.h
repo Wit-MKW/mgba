@@ -12,8 +12,11 @@ CXX_GUARD_START
 
 #include <mgba/core/interface.h>
 #include <mgba/core/timing.h>
+
+#ifdef USE_LIBMOBILE
 #include <mgba-util/socket.h>
 #include "third-party/libmobile/mobile.h"
+#endif
 
 #define GBA_IDLE_LOOP_NONE 0xFFFFFFFF
 
@@ -132,6 +135,7 @@ struct GBASIODriver {
 
 void GBASIOJOYCreate(struct GBASIODriver* sio);
 
+#ifdef USE_LIBMOBILE
 struct GBASIOMobileAdapter {
 	struct GBASIODriver d;
 	struct mTimingEvent event;
@@ -150,6 +154,7 @@ struct GBASIOMobileAdapter {
 
 void GBASIOMobileAdapterCreate(struct GBASIOMobileAdapter*);
 void GBASIOMobileAdapterUpdate(struct GBASIOMobileAdapter*);
+#endif
 
 enum GBASIOBattleChipGateFlavor {
 	GBA_FLAVOR_BATTLECHIP_GATE = 4,

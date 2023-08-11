@@ -1106,6 +1106,7 @@ void CoreController::endPrint() {
 #endif
 
 #ifdef M_CORE_GBA
+#ifdef USE_LIBMOBILE
 void CoreController::attachMobileAdapter() {
 	if (platform() != mPLATFORM_GBA) {
 		return;
@@ -1295,6 +1296,7 @@ bool CoreController::setMobileAdapterToken(const QString& qToken) {
 	mobile_config_set_relay_token(m_mobile.adapter, token);
 	return true;
 }
+#endif /* defined(USE_LIBMOBILE) */
 
 void CoreController::attachBattleChipGate() {
 	if (platform() != mPLATFORM_GBA) {
@@ -1329,7 +1331,7 @@ void CoreController::setBattleChipFlavor(int flavor) {
 	Interrupter interrupter(this);
 	m_battlechip.flavor = flavor;
 }
-#endif
+#endif /* defined(M_CORE_GBA) */
 
 void CoreController::setAVStream(mAVStream* stream) {
 	Interrupter interrupter(this);
