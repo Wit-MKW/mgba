@@ -67,6 +67,10 @@ enum GBColorLookup {
 	GB_COLORS_SGB_CGB_FALLBACK = GB_COLORS_CGB | GB_COLORS_SGB
 };
 
+enum {
+	mPERIPH_GB_MOBILE_ADAPTER = 0x1000
+};
+
 struct GBSIODriver {
 	struct GBSIO* p;
 

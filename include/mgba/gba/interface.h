@@ -134,17 +134,6 @@ struct GBASIODriver {
 
 void GBASIOJOYCreate(struct GBASIODriver* sio);
 
-#ifdef USE_LIBMOBILE
-struct GBASIOMobileAdapter {
-	struct GBASIODriver d;
-	struct mTimingEvent event;
-	struct MobileAdapterGB m;
-	uint32_t nextData;
-};
-
-void GBASIOMobileAdapterCreate(struct GBASIOMobileAdapter*);
-#endif
-
 enum GBASIOBattleChipGateFlavor {
 	GBA_FLAVOR_BATTLECHIP_GATE = 4,
 	GBA_FLAVOR_PROGRESS_GATE = 5,
