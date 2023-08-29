@@ -25,6 +25,7 @@ set(SOURCE_FILES
 	image/font.c
 	image/png-io.c
 	interpolator.c
+	mobile.c
 	patch.c
 	patch-fast.c
 	patch-ips.c
