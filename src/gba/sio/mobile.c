@@ -1,5 +1,3 @@
-#ifdef USE_LIBMOBILE
-
 #include <mgba/internal/gba/sio/mobile.h>
 
 #include <mgba/internal/gba/gba.h>
@@ -130,5 +128,3 @@ void _mobileEvent(struct mTiming* timing, void* user, uint32_t cyclesLate) {
 		GBARaiseIRQ(mobile->d.p->p, GBA_IRQ_SIO, cyclesLate);
 	}
 }
-
-#endif

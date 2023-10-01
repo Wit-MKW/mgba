@@ -1,5 +1,3 @@
-#ifdef USE_LIBMOBILE
-
 #include <mgba/internal/gb/sio/mobile.h>
 
 #include <mgba/internal/gb/gb.h>
@@ -81,5 +79,3 @@ uint8_t GBSIOMobileAdapterWriteSC(struct GBSIODriver* driver, uint8_t value) {
 	}
 	return value;
 }
-
-#endif

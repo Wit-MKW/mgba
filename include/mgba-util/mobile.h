@@ -1,8 +1,6 @@
 #ifndef MOBILE_H
 #define MOBILE_H
 
-#ifdef USE_LIBMOBILE
-
 #include <mgba-util/common.h>
 
 CXX_GUARD_START
@@ -26,7 +24,5 @@ struct MobileAdapterGB {
 struct mobile_adapter* MobileAdapterGBNew(struct MobileAdapterGB *mobile);
 
 CXX_GUARD_END
-
-#endif
 
 #endif

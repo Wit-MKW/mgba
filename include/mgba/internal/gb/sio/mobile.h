@@ -1,8 +1,6 @@
 #ifndef GB_MOBILE_H
 #define GB_MOBILE_H
 
-#ifdef USE_LIBMOBILE
-
 #include <mgba-util/common.h>
 
 CXX_GUARD_START
@@ -21,7 +19,5 @@ struct GBSIOMobileAdapter {
 void GBSIOMobileAdapterCreate(struct GBSIOMobileAdapter*);
 
 CXX_GUARD_END
-
-#endif
 
 #endif

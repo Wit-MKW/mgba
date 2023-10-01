@@ -24,7 +24,6 @@ set(SOURCE_FILES
 
 set(SIO_FILES
 	sio/lockstep.c
-	sio/mobile.c
 	sio/printer.c)
 
 set(EXTRA_FILES
@@ -41,6 +40,10 @@ set(TEST_FILES
 	test/mbc.c
 	test/memory.c
 	test/rtc.c)
+
+if(USE_LIBMOBILE)
+	list(APPEND SIO_FILES sio/mobile.c)
+endif()
 
 source_group("GB board" FILES ${SOURCE_FILES})
 source_group("GB extras" FILES ${EXTRA_FILES} ${SIO_FILES})
