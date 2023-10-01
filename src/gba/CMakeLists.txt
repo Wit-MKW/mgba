@@ -37,8 +37,7 @@ set(SOURCE_FILES
 
 set(SIO_FILES
 	sio/dolphin.c
-	sio/lockstep.c
-	sio/mobile.c)
+	sio/lockstep.c)
 
 set(EXTRA_FILES
 	extra/audio-mixer.c
@@ -51,6 +50,10 @@ set(DEBUGGER_FILES
 set(TEST_FILES
 	test/cheats.c
 	test/core.c)
+
+if(USE_LIBMOBILE)
+	list(APPEND SIO_FILES sio/mobile.c)
+endif()
 
 source_group("GBA board" FILES ${SOURCE_FILES})
 source_group("GBA extras" FILES ${EXTRA_FILES} ${SIO_FILES})
