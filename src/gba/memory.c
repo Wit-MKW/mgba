@@ -128,6 +128,21 @@ void GBAMemoryReset(struct GBA* gba) {
 	GBAAdjustWaitstates(gba, 0);
 	GBAAdjustEWRAMWaitstates(gba, 0x0D00);
 
+	GBAMemoryClearAGBPrint(gba);
+
+	gba->memory.prefetch = false;
+	gba->memory.lastPrefetchedPc = 0;
+
+	if (!gba->memory.wram || !gba->memory.iwram) {
+		GBAMemoryDeinit(gba);
+		mLOG(GBA_MEM, FATAL, "Could not map memory");
+	}
+
+	GBADMAReset(gba);
+	memset(&gba->memory.matrix, 0, sizeof(gba->memory.matrix));
+}
+
+void GBAMemoryClearAGBPrint(struct GBA* gba) {
 	gba->memory.activeRegion = -1;
 	gba->memory.agbPrintProtect = 0;
 	gba->memory.agbPrintBase = 0;
@@ -140,17 +155,6 @@ void GBAMemoryReset(struct GBA* gba) {
 		mappedMemoryFree(gba->memory.agbPrintBufferBackup, GBA_SIZE_AGB_PRINT);
 		gba->memory.agbPrintBufferBackup = NULL;
 	}
-
-	gba->memory.prefetch = false;
-	gba->memory.lastPrefetchedPc = 0;
-
-	if (!gba->memory.wram || !gba->memory.iwram) {
-		GBAMemoryDeinit(gba);
-		mLOG(GBA_MEM, FATAL, "Could not map memory");
-	}
-
-	GBADMAReset(gba);
-	memset(&gba->memory.matrix, 0, sizeof(gba->memory.matrix));
 }
 
 static void _analyzeForIdleLoop(struct GBA* gba, struct ARMCore* cpu, uint32_t address) {
@@ -387,7 +391,7 @@ static void GBASetActiveRegion(struct ARMCore* cpu, uint32_t address) {
 
 #define LOAD_VRAM \
 	if ((address & 0x0001FFFF) >= GBA_SIZE_VRAM) { \
-		if ((address & (GBA_SIZE_VRAM | 0x00014000)) == GBA_SIZE_VRAM && (GBARegisterDISPCNTGetMode(gba->memory.io[REG_DISPCNT >> 1]) >= 3)) { \
+		if ((address & (GBA_SIZE_VRAM | 0x00014000)) == GBA_SIZE_VRAM && (GBARegisterDISPCNTGetMode(gba->memory.io[GBA_REG(DISPCNT)]) >= 3)) { \
 			mLOG(GBA_MEM, GAME_ERROR, "Bad VRAM Load32: 0x%08X", address); \
 			value = 0; \
 		} else { \
@@ -397,7 +401,7 @@ static void GBASetActiveRegion(struct ARMCore* cpu, uint32_t address) {
 		LOAD_32(value, address & 0x0001FFFC, gba->video.vram); \
 	} \
 	++wait; \
-	if (gba->video.shouldStall && (address & 0x0001FFFF) < ((GBARegisterDISPCNTGetMode(gba->memory.io[REG_DISPCNT >> 1]) >= 3) ? 0x00014000 : 0x00010000)) { \
+	if (gba->video.shouldStall && (address & 0x0001FFFF) < ((GBARegisterDISPCNTGetMode(gba->memory.io[GBA_REG(DISPCNT)]) >= 3) ? 0x00014000 : 0x00010000)) { \
 		wait += GBAMemoryStallVRAM(gba, wait, 1); \
 	}
 
@@ -548,7 +552,7 @@ uint32_t GBALoad16(struct ARMCore* cpu, uint32_t address, int* cycleCounter) {
 		break;
 	case GBA_REGION_VRAM:
 		if ((address & 0x0001FFFF) >= GBA_SIZE_VRAM) {
-			if ((address & (GBA_SIZE_VRAM | 0x00014000)) == GBA_SIZE_VRAM && (GBARegisterDISPCNTGetMode(gba->memory.io[REG_DISPCNT >> 1]) >= 3)) {
+			if ((address & (GBA_SIZE_VRAM | 0x00014000)) == GBA_SIZE_VRAM && (GBARegisterDISPCNTGetMode(gba->memory.io[GBA_REG(DISPCNT)]) >= 3)) {
 				mLOG(GBA_MEM, GAME_ERROR, "Bad VRAM Load16: 0x%08X", address);
 				value = 0;
 				break;
@@ -557,7 +561,7 @@ uint32_t GBALoad16(struct ARMCore* cpu, uint32_t address, int* cycleCounter) {
 		} else {
 			LOAD_16(value, address & 0x0001FFFE, gba->video.vram);
 		}
-		if (gba->video.shouldStall && (address & 0x0001FFFF) < ((GBARegisterDISPCNTGetMode(gba->memory.io[REG_DISPCNT >> 1]) >= 3) ? 0x00014000 : 0x00010000)) {
+		if (gba->video.shouldStall && (address & 0x0001FFFF) < ((GBARegisterDISPCNTGetMode(gba->memory.io[GBA_REG(DISPCNT)]) >= 3) ? 0x00014000 : 0x00010000)) {
 			wait += GBAMemoryStallVRAM(gba, wait, 0);
 		}
 		break;
@@ -663,7 +667,7 @@ uint32_t GBALoad8(struct ARMCore* cpu, uint32_t address, int* cycleCounter) {
 		break;
 	case GBA_REGION_VRAM:
 		if ((address & 0x0001FFFF) >= GBA_SIZE_VRAM) {
-			if ((address & (GBA_SIZE_VRAM | 0x00014000)) == GBA_SIZE_VRAM && (GBARegisterDISPCNTGetMode(gba->memory.io[REG_DISPCNT >> 1]) >= 3)) {
+			if ((address & (GBA_SIZE_VRAM | 0x00014000)) == GBA_SIZE_VRAM && (GBARegisterDISPCNTGetMode(gba->memory.io[GBA_REG(DISPCNT)]) >= 3)) {
 				mLOG(GBA_MEM, GAME_ERROR, "Bad VRAM Load8: 0x%08X", address);
 				value = 0;
 				break;
@@ -758,7 +762,7 @@ uint32_t GBALoad8(struct ARMCore* cpu, uint32_t address, int* cycleCounter) {
 
 #define STORE_VRAM \
 	if ((address & 0x0001FFFF) >= GBA_SIZE_VRAM) { \
-		if ((address & (GBA_SIZE_VRAM | 0x00014000)) == GBA_SIZE_VRAM && (GBARegisterDISPCNTGetMode(gba->memory.io[REG_DISPCNT >> 1]) >= 3)) { \
+		if ((address & (GBA_SIZE_VRAM | 0x00014000)) == GBA_SIZE_VRAM && (GBARegisterDISPCNTGetMode(gba->memory.io[GBA_REG(DISPCNT)]) >= 3)) { \
 			mLOG(GBA_MEM, GAME_ERROR, "Bad VRAM Store32: 0x%08X", address); \
 		} else { \
 			LOAD_32(oldValue, address & 0x00017FFC, gba->video.vram); \
@@ -777,7 +781,7 @@ uint32_t GBALoad8(struct ARMCore* cpu, uint32_t address, int* cycleCounter) {
 		} \
 	} \
 	++wait; \
-	if (gba->video.shouldStall && (address & 0x0001FFFF) < ((GBARegisterDISPCNTGetMode(gba->memory.io[REG_DISPCNT >> 1]) >= 3) ? 0x00014000 : 0x00010000)) { \
+	if (gba->video.shouldStall && (address & 0x0001FFFF) < ((GBARegisterDISPCNTGetMode(gba->memory.io[GBA_REG(DISPCNT)]) >= 3) ? 0x00014000 : 0x00010000)) { \
 		wait += GBAMemoryStallVRAM(gba, wait, 1); \
 	}
 
@@ -888,7 +892,7 @@ void GBAStore16(struct ARMCore* cpu, uint32_t address, int16_t value, int* cycle
 		break;
 	case GBA_REGION_VRAM:
 		if ((address & 0x0001FFFF) >= GBA_SIZE_VRAM) {
-			if ((address & (GBA_SIZE_VRAM | 0x00014000)) == GBA_SIZE_VRAM && (GBARegisterDISPCNTGetMode(gba->memory.io[REG_DISPCNT >> 1]) >= 3)) {
+			if ((address & (GBA_SIZE_VRAM | 0x00014000)) == GBA_SIZE_VRAM && (GBARegisterDISPCNTGetMode(gba->memory.io[GBA_REG(DISPCNT)]) >= 3)) {
 				mLOG(GBA_MEM, GAME_ERROR, "Bad VRAM Store16: 0x%08X", address);
 				break;
 			}
@@ -904,7 +908,7 @@ void GBAStore16(struct ARMCore* cpu, uint32_t address, int16_t value, int* cycle
 				gba->video.renderer->writeVRAM(gba->video.renderer, address & 0x0001FFFE);
 			}
 		}
-		if (gba->video.shouldStall && (address & 0x0001FFFF) < ((GBARegisterDISPCNTGetMode(gba->memory.io[REG_DISPCNT >> 1]) >= 3) ? 0x00014000 : 0x00010000)) {
+		if (gba->video.shouldStall && (address & 0x0001FFFF) < ((GBARegisterDISPCNTGetMode(gba->memory.io[GBA_REG(DISPCNT)]) >= 3) ? 0x00014000 : 0x00010000)) {
 			wait += GBAMemoryStallVRAM(gba, wait, 0);
 		}
 		break;
@@ -1025,7 +1029,7 @@ void GBAStore8(struct ARMCore* cpu, uint32_t address, int8_t value, int* cycleCo
 		GBAStore16(cpu, address & ~1, ((uint8_t) value) | ((uint8_t) value << 8), cycleCounter);
 		break;
 	case GBA_REGION_VRAM:
-		if ((address & 0x0001FFFF) >= ((GBARegisterDISPCNTGetMode(gba->memory.io[REG_DISPCNT >> 1]) >= 3) ? 0x00014000 : 0x00010000)) {
+		if ((address & 0x0001FFFF) >= ((GBARegisterDISPCNTGetMode(gba->memory.io[GBA_REG(DISPCNT)]) >= 3) ? 0x00014000 : 0x00010000)) {
 			mLOG(GBA_MEM, GAME_ERROR, "Cannot Store8 to OBJ: 0x%08X", address);
 			break;
 		}
@@ -1114,7 +1118,7 @@ uint32_t GBAView32(struct ARMCore* cpu, uint32_t address) {
 		value = GBALoad32(cpu, address, 0);
 		break;
 	case GBA_REGION_IO:
-		if ((address & OFFSET_MASK) < REG_MAX) {
+		if ((address & OFFSET_MASK) < GBA_REG_MAX) {
 			value = gba->memory.io[(address & OFFSET_MASK) >> 1];
 			value |= gba->memory.io[((address & OFFSET_MASK) >> 1) + 1] << 16;
 		}
@@ -1155,7 +1159,7 @@ uint16_t GBAView16(struct ARMCore* cpu, uint32_t address) {
 		value = GBALoad16(cpu, address, 0);
 		break;
 	case GBA_REGION_IO:
-		if ((address & OFFSET_MASK) < REG_MAX) {
+		if ((address & OFFSET_MASK) < GBA_REG_MAX) {
 			value = gba->memory.io[(address & OFFSET_MASK) >> 1];
 		}
 		break;
@@ -1775,7 +1779,7 @@ int32_t GBAMemoryStall(struct ARMCore* cpu, int32_t wait) {
 int32_t GBAMemoryStallVRAM(struct GBA* gba, int32_t wait, int extra) {
 	UNUSED(extra);
 	// TODO
-	uint16_t dispcnt = gba->memory.io[REG_DISPCNT >> 1];
+	uint16_t dispcnt = gba->memory.io[GBA_REG(DISPCNT)];
 	int32_t stall = 0;
 	switch (GBARegisterDISPCNTGetMode(dispcnt)) {
 	case 2:
