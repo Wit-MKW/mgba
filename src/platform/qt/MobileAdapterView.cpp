@@ -36,10 +36,6 @@ MobileAdapterView::MobileAdapterView(std::shared_ptr<CoreController> controller,
 		size = 1;
 	}
 
-	m_ui.setDns1->setInputMask("000.000.000.000;_");
-	m_ui.setDns2->setInputMask("000.000.000.000;_");
-	m_ui.setRelay->setInputMask("000.000.000.000;_");
-
 	QRegularExpression reToken("[\\dA-Fa-f]{32}?");
 	QRegularExpressionValidator vToken(reToken, m_ui.setToken);
 	m_ui.setToken->setValidator(&vToken);
@@ -75,12 +71,12 @@ void MobileAdapterView::setUnmetered(bool unmetered) {
 }
 
 void MobileAdapterView::setDns1() {
-	m_controller->setMobileAdapterDns1(m_ui.setDns1->text().replace('_', ""), 53);
+	m_controller->setMobileAdapterDns1(m_ui.setDns1->text(), 53);
 	getConfig();
 }
 
 void MobileAdapterView::setDns2() {
-	m_controller->setMobileAdapterDns2(m_ui.setDns2->text().replace('_', ""), 53);
+	m_controller->setMobileAdapterDns2(m_ui.setDns2->text(), 53);
 	getConfig();
 }
 
@@ -90,7 +86,7 @@ void MobileAdapterView::setPort(int port) {
 }
 
 void MobileAdapterView::setRelay() {
-	m_controller->setMobileAdapterRelay(m_ui.setRelay->text().replace('_', ""), 31227);
+	m_controller->setMobileAdapterRelay(m_ui.setRelay->text(), 31227);
 	getConfig();
 }
 

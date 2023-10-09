@@ -1162,7 +1162,7 @@ void CoreController::getMobileAdapterConfig(int* type, bool* unmetered, QString*
 		for (int i = 0; i < MOBILE_HOSTLEN_IPV4; ++i) {
 			QString tmp;
 			tmp.setNum((*(struct mobile_addr4*) &dns1_get).host[i]);
-			*dns1 += tmp.rightJustified(3, '_') + ".";
+			*dns1 += tmp + ".";
 		}
 		dns1->chop(1);
 	}
@@ -1171,7 +1171,7 @@ void CoreController::getMobileAdapterConfig(int* type, bool* unmetered, QString*
 		for (int i = 0; i < MOBILE_HOSTLEN_IPV4; ++i) {
 			QString tmp;
 			tmp.setNum((*(struct mobile_addr4*) &dns2_get).host[i]);
-			*dns2 += tmp.rightJustified(3, '_') + ".";
+			*dns2 += tmp + ".";
 		}
 		dns2->chop(1);
 	}
@@ -1183,7 +1183,7 @@ void CoreController::getMobileAdapterConfig(int* type, bool* unmetered, QString*
 		for (int i = 0; i < MOBILE_HOSTLEN_IPV4; ++i) {
 			QString tmp;
 			tmp.setNum((*(struct mobile_addr4*) &relay_get).host[i]);
-			*relay += tmp.rightJustified(3, '_') + ".";
+			*relay += tmp + ".";
 		}
 		relay->chop(1);
 	}
