@@ -134,6 +134,7 @@ static inline bool SocketWouldBlock() {
 }
 
 static inline bool SocketIsConnecting() {
+	if (SocketWouldBlock()) return true;
 #ifdef _WIN32
 	return SocketError() == WSAEINPROGRESS || SocketError() == WSAEALREADY;
 #else
