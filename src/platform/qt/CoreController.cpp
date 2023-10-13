@@ -1230,10 +1230,17 @@ void CoreController::setMobileAdapterDns1(const QString& host, int port) {
 	Interrupter interrupter(this);
 	struct mobile_adapter* adapter = (platform() == mPLATFORM_GBA) ? m_mobile.m.adapter : m_gbmobile.m.adapter;
 	struct mobile_addr dns1;
-	dns1.type = MOBILE_ADDRTYPE_IPV4;
-	(*(struct mobile_addr4*) &dns1).port = port;
-	for (int i = 0; i < MOBILE_HOSTLEN_IPV4; ++i) {
-		(*(struct mobile_addr4*) &dns1).host[i] = host.section('.', i, i).toInt();
+	if (host.isEmpty()) {
+		dns1.type = MOBILE_ADDRTYPE_NONE;
+	} else {
+		dns1.type = MOBILE_ADDRTYPE_IPV4;
+		(*(struct mobile_addr4*) &dns1).port = port;
+		for (int i = 0; i < MOBILE_HOSTLEN_IPV4; ++i) {
+			bool ok = false;
+			unsigned short tmp = host.section('.', i, i).toUShort(&ok);
+			if (!ok || tmp >= 256) return;
+			(*(struct mobile_addr4*) &dns1).host[i] = (unsigned char) tmp;
+		}
 	}
 	mobile_config_set_dns(adapter, &dns1, MOBILE_DNS1);
 }
@@ -1242,10 +1249,17 @@ void CoreController::setMobileAdapterDns2(const QString& host, int port) {
 	Interrupter interrupter(this);
 	struct mobile_adapter* adapter = (platform() == mPLATFORM_GBA) ? m_mobile.m.adapter : m_gbmobile.m.adapter;
 	struct mobile_addr dns2;
-	dns2.type = MOBILE_ADDRTYPE_IPV4;
-	(*(struct mobile_addr4*) &dns2).port = port;
-	for (int i = 0; i < MOBILE_HOSTLEN_IPV4; ++i) {
-		(*(struct mobile_addr4*) &dns2).host[i] = host.section('.', i, i).toInt();
+	if (host.isEmpty()) {
+		dns2.type = MOBILE_ADDRTYPE_NONE;
+	} else {
+		dns2.type = MOBILE_ADDRTYPE_IPV4;
+		(*(struct mobile_addr4*) &dns2).port = port;
+		for (int i = 0; i < MOBILE_HOSTLEN_IPV4; ++i) {
+			bool ok = false;
+			unsigned short tmp = host.section('.', i, i).toUShort(&ok);
+			if (!ok || tmp >= 256) return;
+			(*(struct mobile_addr4*) &dns2).host[i] = (unsigned char) tmp;
+		}
 	}
 	mobile_config_set_dns(adapter, &dns2, MOBILE_DNS2);
 }
@@ -1260,13 +1274,16 @@ void CoreController::setMobileAdapterRelay(const QString& host, int port) {
 	Interrupter interrupter(this);
 	struct mobile_adapter* adapter = (platform() == mPLATFORM_GBA) ? m_mobile.m.adapter : m_gbmobile.m.adapter;
 	struct mobile_addr relay;
-	if (host == "...") {
+	if (host.isEmpty()) {
 		relay.type = MOBILE_ADDRTYPE_NONE;
 	} else {
 		relay.type = MOBILE_ADDRTYPE_IPV4;
 		(*(struct mobile_addr4*) &relay).port = port;
 		for (int i = 0; i < MOBILE_HOSTLEN_IPV4; ++i) {
-			(*(struct mobile_addr4*) &relay).host[i] = host.section('.', i, i).toInt();
+			bool ok = false;
+			unsigned short tmp = host.section('.', i, i).toUShort(&ok);
+			if (!ok || tmp >= 256) return;
+			(*(struct mobile_addr4*) &relay).host[i] = (unsigned char) tmp;
 		}
 	}
 	mobile_config_set_relay(adapter, &relay);
