@@ -134,9 +134,8 @@ static inline bool SocketWouldBlock() {
 }
 
 static inline bool SocketIsConnecting() {
-	if (SocketWouldBlock()) return true;
 #ifdef _WIN32
-	return SocketError() == WSAEINPROGRESS || SocketError() == WSAEALREADY;
+	return SocketError() == WSAEINPROGRESS || SocketError() == WSAEALREADY || SocketError() == WSAEWOULDBLOCK;
 #else
 	return SocketError() == EINPROGRESS || SocketError() == EALREADY;
 #endif
@@ -273,7 +272,7 @@ static inline Socket SocketCreate(bool useIPv6, int type, int protocol) {
 	}
 }
 
-static inline int SocketOpen(Socket sock, int port, const struct Address* bindAddress) {
+static inline Socket SocketOpen(Socket sock, int port, const struct Address* bindAddress) {
 	bool useIPv6 = bindAddress && (bindAddress->version == IPV6);
 	int err = -1;
 
