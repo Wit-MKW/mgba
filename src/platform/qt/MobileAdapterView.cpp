@@ -4,9 +4,9 @@
 
 #include "ConfigController.h"
 #include "CoreController.h"
-#include "GBAApp.h"
 #include "ShortcutController.h"
 #include "Window.h"
+#include "utils.h"
 
 #include <QtAlgorithms>
 #include <QClipboard>
@@ -71,12 +71,66 @@ void MobileAdapterView::setUnmetered(bool unmetered) {
 }
 
 void MobileAdapterView::setDns1() {
-	m_controller->setMobileAdapterDns1(m_ui.setDns1->text(), 53);
+	unsigned port = 53;
+	QHostAddress qaddress;
+	Address address;
+	QString addrtext = m_ui.setDns1->text();
+	if (addrtext.isEmpty()) {
+		m_controller->clearMobileAdapterDns1();
+		goto error;
+	}
+	if (!qaddress.setAddress(addrtext)) {
+		QString porttext = addrtext.section(':', -1);
+		addrtext = addrtext.section(':', 0, -2);
+		bool ok = false;
+		port = porttext.toUInt(&ok);
+		if (!ok || addrtext.contains(':')) {
+			if (!addrtext.startsWith('[')) goto error;
+			if (!addrtext.endsWith(']')) {
+				if (!porttext.endsWith(']')) goto error;
+				addrtext += QString(':') + porttext;
+				port = 53;
+			}
+			addrtext.remove(0, 1);
+			addrtext.remove(-1, 1);
+		}
+		qaddress.setAddress(addrtext);
+	}
+	convertAddress(&qaddress, &address);
+	m_controller->setMobileAdapterDns1(address, port);
+error:
 	getConfig();
 }
 
 void MobileAdapterView::setDns2() {
-	m_controller->setMobileAdapterDns2(m_ui.setDns2->text(), 53);
+	unsigned port = 53;
+	QHostAddress qaddress;
+	Address address;
+	QString addrtext = m_ui.setDns2->text();
+	if (addrtext.isEmpty()) {
+		m_controller->clearMobileAdapterDns2();
+		goto error;
+	}
+	if (!qaddress.setAddress(addrtext)) {
+		QString porttext = addrtext.section(':', -1);
+		addrtext = addrtext.section(':', 0, -2);
+		bool ok = false;
+		port = porttext.toUInt(&ok);
+		if (!ok || addrtext.contains(':')) {
+			if (!addrtext.startsWith('[')) goto error;
+			if (!addrtext.endsWith(']')) {
+				if (!porttext.endsWith(']')) goto error;
+				addrtext += QString(':') + porttext;
+				port = 53;
+			}
+			addrtext.remove(0, 1);
+			addrtext.remove(-1, 1);
+		}
+		qaddress.setAddress(addrtext);
+	}
+	convertAddress(&qaddress, &address);
+	m_controller->setMobileAdapterDns2(address, port);
+error:
 	getConfig();
 }
 
@@ -86,12 +140,39 @@ void MobileAdapterView::setPort(int port) {
 }
 
 void MobileAdapterView::setRelay() {
-	m_controller->setMobileAdapterRelay(m_ui.setRelay->text(), 31227);
+	unsigned port = 31227;
+	QHostAddress qaddress;
+	Address address;
+	QString addrtext = m_ui.setRelay->text();
+	if (addrtext.isEmpty()) {
+		m_controller->clearMobileAdapterRelay();
+		goto error;
+	}
+	if (!qaddress.setAddress(addrtext)) {
+		QString porttext = addrtext.section(':', -1);
+		addrtext = addrtext.section(':', 0, -2);
+		bool ok = false;
+		port = porttext.toUInt(&ok);
+		if (!ok || addrtext.contains(':')) {
+			if (!addrtext.startsWith('[')) goto error;
+			if (!addrtext.endsWith(']')) {
+				if (!porttext.endsWith(']')) goto error;
+				addrtext += QString(':') + porttext;
+				port = 31227;
+			}
+			addrtext.remove(0, 1);
+			addrtext.remove(-1, 1);
+		}
+		qaddress.setAddress(addrtext);
+	}
+	convertAddress(&qaddress, &address);
+	m_controller->setMobileAdapterRelay(address, port);
+error:
 	getConfig();
 }
 
 void MobileAdapterView::setToken() {
-	QString token = m_ui.setToken->text().simplified();
+	QString token = m_ui.setToken->text();
 	if (m_controller->setMobileAdapterToken(token)) {
 		m_ui.setToken->setText(token);
 		m_tokenFilled = true;

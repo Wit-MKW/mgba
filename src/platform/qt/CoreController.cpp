@@ -14,6 +14,7 @@
 
 #include <QAbstractButton>
 #include <QDateTime>
+#include <QHostAddress>
 #include <QMessageBox>
 #include <QMutexLocker>
 
@@ -1158,34 +1159,67 @@ void CoreController::getMobileAdapterConfig(int* type, bool* unmetered, QString*
 	mobile_config_get_dns(adapter, &dns1_get, MOBILE_DNS1);
 	mobile_config_get_dns(adapter, &dns2_get, MOBILE_DNS2);
 	dns1->clear();
-	if (dns1_get.type == MOBILE_ADDRTYPE_IPV4) {
-		for (int i = 0; i < MOBILE_HOSTLEN_IPV4; ++i) {
+	if (dns1_get.type == MOBILE_ADDRTYPE_IPV6) {
+		struct mobile_addr6* addr6 = (struct mobile_addr6*) &dns1_get;
+		QHostAddress qaddress(addr6->host);
+		*dns1 = qaddress.toString();
+		if (addr6->port != 53) {
 			QString tmp;
-			tmp.setNum((*(struct mobile_addr4*) &dns1_get).host[i]);
-			*dns1 += tmp + ".";
+			tmp.setNum(addr6->port);
+			*dns1 = QString('[') + *dns1 + "]:" + tmp;
 		}
-		dns1->chop(1);
+	} else if (dns1_get.type == MOBILE_ADDRTYPE_IPV4) {
+		struct mobile_addr4* addr4 = (struct mobile_addr4*) &dns1_get;
+		QHostAddress qaddress(ntohl(*(unsigned*) addr4->host));
+		*dns1 = qaddress.toString();
+		if (addr4->port != 53) {
+			QString tmp;
+			tmp.setNum(addr4->port);
+			*dns1 += QString(':') + tmp;
+		}
 	}
 	dns2->clear();
-	if (dns2_get.type == MOBILE_ADDRTYPE_IPV4) {
-		for (int i = 0; i < MOBILE_HOSTLEN_IPV4; ++i) {
+	if (dns2_get.type == MOBILE_ADDRTYPE_IPV6) {
+		struct mobile_addr6* addr6 = (struct mobile_addr6*) &dns2_get;
+		QHostAddress qaddress(addr6->host);
+		*dns2 = qaddress.toString();
+		if (addr6->port != 53) {
 			QString tmp;
-			tmp.setNum((*(struct mobile_addr4*) &dns2_get).host[i]);
-			*dns2 += tmp + ".";
+			tmp.setNum(addr6->port);
+			*dns2 = QString('[') + *dns2 + "]:" + tmp;
 		}
-		dns2->chop(1);
+	} else if (dns2_get.type == MOBILE_ADDRTYPE_IPV4) {
+		struct mobile_addr4* addr4 = (struct mobile_addr4*) &dns2_get;
+		QHostAddress qaddress(ntohl(*(unsigned*) addr4->host));
+		*dns2 = qaddress.toString();
+		if (addr4->port != 53) {
+			QString tmp;
+			tmp.setNum(addr4->port);
+			*dns2 += QString(':') + tmp;
+		}
 	}
 	mobile_config_get_p2p_port(adapter, (unsigned*) port);
 	struct mobile_addr relay_get;
 	mobile_config_get_relay(adapter, &relay_get);
 	relay->clear();
-	if (relay_get.type == MOBILE_ADDRTYPE_IPV4) {
-		for (int i = 0; i < MOBILE_HOSTLEN_IPV4; ++i) {
+	if (relay_get.type == MOBILE_ADDRTYPE_IPV6) {
+		struct mobile_addr6* addr6 = (struct mobile_addr6*) &relay_get;
+		QHostAddress qaddress(addr6->host);
+		*relay = qaddress.toString();
+		if (addr6->port != 31227) {
 			QString tmp;
-			tmp.setNum((*(struct mobile_addr4*) &relay_get).host[i]);
-			*relay += tmp + ".";
+			tmp.setNum(addr6->port);
+			*relay = QString('[') + *relay + "]:" + tmp;
 		}
-		relay->chop(1);
+	} else if (relay_get.type == MOBILE_ADDRTYPE_IPV4) {
+		struct mobile_addr4* addr4 = (struct mobile_addr4*) &relay_get;
+		QHostAddress qaddress(ntohl(*(unsigned*) addr4->host));
+		*relay = qaddress.toString();
+		if (addr4->port != 31227) {
+			QString tmp;
+			tmp.setNum(addr4->port);
+			*relay += QString(':') + tmp;
+		}
 	}
 }
 
@@ -1226,42 +1260,58 @@ void CoreController::setMobileAdapterUnmetered(bool unmetered) {
 	mobile_config_set_device(adapter, device, unmetered);
 }
 
-void CoreController::setMobileAdapterDns1(const QString& host, int port) {
+void CoreController::setMobileAdapterDns1(const Address& host, int port) {
 	Interrupter interrupter(this);
 	struct mobile_adapter* adapter = (platform() == mPLATFORM_GBA) ? m_mobile.m.adapter : m_gbmobile.m.adapter;
-	struct mobile_addr dns1;
-	if (host.isEmpty()) {
-		dns1.type = MOBILE_ADDRTYPE_NONE;
+	struct mobile_addr addr;
+	if (host.version == IPV6) {
+		struct mobile_addr6 *addr6 = (struct mobile_addr6*) &addr;
+		addr6->type = MOBILE_ADDRTYPE_IPV6;
+		memcpy(&addr6->host, &host.ipv6, MOBILE_HOSTLEN_IPV6);
+		addr6->port = port;
 	} else {
-		dns1.type = MOBILE_ADDRTYPE_IPV4;
-		(*(struct mobile_addr4*) &dns1).port = port;
-		for (int i = 0; i < MOBILE_HOSTLEN_IPV4; ++i) {
-			bool ok = false;
-			unsigned short tmp = host.section('.', i, i).toUShort(&ok);
-			if (!ok || tmp >= 256) return;
-			(*(struct mobile_addr4*) &dns1).host[i] = (unsigned char) tmp;
-		}
+		struct mobile_addr4 *addr4 = (struct mobile_addr4*) &addr;
+		addr4->type = MOBILE_ADDRTYPE_IPV4;
+		*(uint32_t*) &addr4->host = htonl(host.ipv4);
+		addr4->port = port;
 	}
-	mobile_config_set_dns(adapter, &dns1, MOBILE_DNS1);
+	mobile_config_set_dns(adapter, &addr, MOBILE_DNS1);
 }
 
-void CoreController::setMobileAdapterDns2(const QString& host, int port) {
+void CoreController::clearMobileAdapterDns1() {
 	Interrupter interrupter(this);
 	struct mobile_adapter* adapter = (platform() == mPLATFORM_GBA) ? m_mobile.m.adapter : m_gbmobile.m.adapter;
-	struct mobile_addr dns2;
-	if (host.isEmpty()) {
-		dns2.type = MOBILE_ADDRTYPE_NONE;
+	struct mobile_addr addr = {
+		.type = MOBILE_ADDRTYPE_NONE
+	};
+	mobile_config_set_dns(adapter, &addr, MOBILE_DNS1);
+}
+
+void CoreController::setMobileAdapterDns2(const Address& host, int port) {
+	Interrupter interrupter(this);
+	struct mobile_adapter* adapter = (platform() == mPLATFORM_GBA) ? m_mobile.m.adapter : m_gbmobile.m.adapter;
+	struct mobile_addr addr;
+	if (host.version == IPV6) {
+		struct mobile_addr6 *addr6 = (struct mobile_addr6*) &addr;
+		addr6->type = MOBILE_ADDRTYPE_IPV6;
+		memcpy(&addr6->host, &host.ipv6, MOBILE_HOSTLEN_IPV6);
+		addr6->port = port;
 	} else {
-		dns2.type = MOBILE_ADDRTYPE_IPV4;
-		(*(struct mobile_addr4*) &dns2).port = port;
-		for (int i = 0; i < MOBILE_HOSTLEN_IPV4; ++i) {
-			bool ok = false;
-			unsigned short tmp = host.section('.', i, i).toUShort(&ok);
-			if (!ok || tmp >= 256) return;
-			(*(struct mobile_addr4*) &dns2).host[i] = (unsigned char) tmp;
-		}
+		struct mobile_addr4 *addr4 = (struct mobile_addr4*) &addr;
+		addr4->type = MOBILE_ADDRTYPE_IPV4;
+		*(uint32_t*) &addr4->host = htonl(host.ipv4);
+		addr4->port = port;
 	}
-	mobile_config_set_dns(adapter, &dns2, MOBILE_DNS2);
+	mobile_config_set_dns(adapter, &addr, MOBILE_DNS2);
+}
+
+void CoreController::clearMobileAdapterDns2() {
+	Interrupter interrupter(this);
+	struct mobile_adapter* adapter = (platform() == mPLATFORM_GBA) ? m_mobile.m.adapter : m_gbmobile.m.adapter;
+	struct mobile_addr addr = {
+		.type = MOBILE_ADDRTYPE_NONE
+	};
+	mobile_config_set_dns(adapter, &addr, MOBILE_DNS2);
 }
 
 void CoreController::setMobileAdapterPort(int port) {
@@ -1270,29 +1320,37 @@ void CoreController::setMobileAdapterPort(int port) {
 	mobile_config_set_p2p_port(adapter, (unsigned) port);
 }
 
-void CoreController::setMobileAdapterRelay(const QString& host, int port) {
+void CoreController::setMobileAdapterRelay(const Address& host, int port) {
 	Interrupter interrupter(this);
 	struct mobile_adapter* adapter = (platform() == mPLATFORM_GBA) ? m_mobile.m.adapter : m_gbmobile.m.adapter;
-	struct mobile_addr relay;
-	if (host.isEmpty()) {
-		relay.type = MOBILE_ADDRTYPE_NONE;
+	struct mobile_addr addr;
+	if (host.version == IPV6) {
+		struct mobile_addr6 *addr6 = (struct mobile_addr6*) &addr;
+		addr6->type = MOBILE_ADDRTYPE_IPV6;
+		memcpy(&addr6->host, &host.ipv6, MOBILE_HOSTLEN_IPV6);
+		addr6->port = port;
 	} else {
-		relay.type = MOBILE_ADDRTYPE_IPV4;
-		(*(struct mobile_addr4*) &relay).port = port;
-		for (int i = 0; i < MOBILE_HOSTLEN_IPV4; ++i) {
-			bool ok = false;
-			unsigned short tmp = host.section('.', i, i).toUShort(&ok);
-			if (!ok || tmp >= 256) return;
-			(*(struct mobile_addr4*) &relay).host[i] = (unsigned char) tmp;
-		}
+		struct mobile_addr4 *addr4 = (struct mobile_addr4*) &addr;
+		addr4->type = MOBILE_ADDRTYPE_IPV4;
+		*(uint32_t*) &addr4->host = htonl(host.ipv4);
+		addr4->port = port;
 	}
-	mobile_config_set_relay(adapter, &relay);
+	mobile_config_set_relay(adapter, &addr);
+}
+
+void CoreController::clearMobileAdapterRelay() {
+	Interrupter interrupter(this);
+	struct mobile_adapter* adapter = (platform() == mPLATFORM_GBA) ? m_mobile.m.adapter : m_gbmobile.m.adapter;
+	struct mobile_addr addr = {
+		.type = MOBILE_ADDRTYPE_NONE
+	};
+	mobile_config_set_relay(adapter, &addr);
 }
 
 bool CoreController::setMobileAdapterToken(const QString& qToken) {
 	Interrupter interrupter(this);
 	struct mobile_adapter* adapter = (platform() == mPLATFORM_GBA) ? m_mobile.m.adapter : m_gbmobile.m.adapter;
-	if (qToken.size() != MOBILE_RELAY_TOKEN_SIZE * 2 || qToken.contains(' ')) {
+	if (qToken.size() != MOBILE_RELAY_TOKEN_SIZE * 2) {
 		mobile_config_set_relay_token(adapter, nullptr);
 		return false;
 	}

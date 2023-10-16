@@ -209,10 +209,13 @@ public slots:
 	void updateMobileAdapter(QString* userNumber, QString* peerNumber, QString* token);
 	void setMobileAdapterType(int type);
 	void setMobileAdapterUnmetered(bool unmetered);
-	void setMobileAdapterDns1(const QString& host, int port);
-	void setMobileAdapterDns2(const QString& host, int port);
+	void setMobileAdapterDns1(const Address& host, int port);
+	void clearMobileAdapterDns1();
+	void setMobileAdapterDns2(const Address& host, int port);
+	void clearMobileAdapterDns2();
 	void setMobileAdapterPort(int port);
-	void setMobileAdapterRelay(const QString& host, int port);
+	void setMobileAdapterRelay(const Address& host, int port);
+	void clearMobileAdapterRelay();
 	bool setMobileAdapterToken(const QString& qToken);
 #endif
 
