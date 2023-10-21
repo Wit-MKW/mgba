@@ -272,7 +272,7 @@ static inline Socket SocketCreate(bool useIPv6, int type, int protocol) {
 	}
 }
 
-static inline Socket SocketOpen(Socket sock, int port, const struct Address* bindAddress) {
+static inline int SocketOpen(Socket sock, int port, const struct Address* bindAddress) {
 	bool useIPv6 = bindAddress && (bindAddress->version == IPV6);
 	int err = -1;
 
