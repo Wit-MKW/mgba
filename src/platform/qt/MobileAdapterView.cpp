@@ -71,7 +71,7 @@ void MobileAdapterView::setUnmetered(bool unmetered) {
 }
 
 void MobileAdapterView::setDns1() {
-	unsigned port = 53;
+	unsigned port = MOBILE_DNS_PORT;
 	QHostAddress qaddress;
 	Address address;
 	QString addrtext = m_ui.setDns1->text();
@@ -89,7 +89,7 @@ void MobileAdapterView::setDns1() {
 			if (!addrtext.endsWith(']')) {
 				if (!porttext.endsWith(']')) goto error;
 				addrtext += QString(':') + porttext;
-				port = 53;
+				port = MOBILE_DNS_PORT;
 			}
 			addrtext.remove(0, 1);
 			addrtext.remove(-1, 1);
@@ -103,7 +103,7 @@ error:
 }
 
 void MobileAdapterView::setDns2() {
-	unsigned port = 53;
+	unsigned port = MOBILE_DNS_PORT;
 	QHostAddress qaddress;
 	Address address;
 	QString addrtext = m_ui.setDns2->text();
@@ -121,7 +121,7 @@ void MobileAdapterView::setDns2() {
 			if (!addrtext.endsWith(']')) {
 				if (!porttext.endsWith(']')) goto error;
 				addrtext += QString(':') + porttext;
-				port = 53;
+				port = MOBILE_DNS_PORT;
 			}
 			addrtext.remove(0, 1);
 			addrtext.remove(-1, 1);
@@ -140,7 +140,7 @@ void MobileAdapterView::setPort(int port) {
 }
 
 void MobileAdapterView::setRelay() {
-	unsigned port = 31227;
+	unsigned port = MOBILE_DEFAULT_RELAY_PORT;
 	QHostAddress qaddress;
 	Address address;
 	QString addrtext = m_ui.setRelay->text();
@@ -158,7 +158,7 @@ void MobileAdapterView::setRelay() {
 			if (!addrtext.endsWith(']')) {
 				if (!porttext.endsWith(']')) goto error;
 				addrtext += QString(':') + porttext;
-				port = 31227;
+				port = MOBILE_DEFAULT_RELAY_PORT;
 			}
 			addrtext.remove(0, 1);
 			addrtext.remove(-1, 1);
