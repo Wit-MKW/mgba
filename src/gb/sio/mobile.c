@@ -58,7 +58,6 @@ void GBSIOMobileAdapterDeinit(struct GBSIODriver* driver) {
 	struct GBSIOMobileAdapter* mobile = (struct GBSIOMobileAdapter*) driver;
 	if (!mobile->m.adapter) return;
 
-	mobile_config_save(mobile->m.adapter);
 	mobile_stop(mobile->m.adapter);
 	free(mobile->m.adapter);
 	mobile->m.adapter = NULL;
