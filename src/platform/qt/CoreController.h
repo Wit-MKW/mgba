@@ -35,6 +35,10 @@
 #endif
 #endif
 
+#ifdef M_CORE_GBA
+#include <mgba/gba/interface.h>
+#endif
+
 struct mCore;
 
 namespace QGBA {
@@ -213,6 +217,7 @@ public slots:
 	void setMobileAdapterRelay(const Address& host, int port);
 	void clearMobileAdapterRelay();
 	bool setMobileAdapterToken(const QString& qToken);
+	struct MobileAdapterGB* getMobileAdapter() { return platform() == mPLATFORM_GBA ? &m_mobile.m : &m_gbmobile.m; }
 #endif
 
 #ifdef M_CORE_GBA
