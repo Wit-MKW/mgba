@@ -1109,48 +1109,46 @@ void CoreController::endPrint() {
 #ifdef USE_LIBMOBILE
 void CoreController::attachMobileAdapter() {
 	Interrupter interrupter(this);
+
 	clearMultiplayerController();
 	if (platform() == mPLATFORM_GBA) {
 		GBASIOMobileAdapterCreate(&m_mobile);
-		QFile fconfig(ConfigController::configDir() + "/mobile_config.bin");
-		if (fconfig.open(QIODevice::ReadOnly)) {
-			fconfig.read((char*) &m_mobile.m.config, MOBILE_CONFIG_SIZE);
-			fconfig.close();
-		}
-		m_threadContext.core->setPeripheral(m_threadContext.core, mPERIPH_GBA_MOBILE_ADAPTER, &m_mobile);
 	} else {
 		GBSIOMobileAdapterCreate(&m_gbmobile);
-		QFile fconfig(ConfigController::configDir() + "/mobile_config.bin");
-		if (fconfig.open(QIODevice::ReadOnly)) {
-			fconfig.read((char*) &m_gbmobile.m.config, MOBILE_CONFIG_SIZE);
-			fconfig.close();
-		}
+	}
+
+	QFile fconfig(ConfigController::configDir() + "/mobile_config.bin");
+	if (fconfig.open(QIODevice::ReadOnly)) {
+		fconfig.read((char*) getMobileAdapter()->config, MOBILE_CONFIG_SIZE);
+		fconfig.close();
+	}
+
+	if (platform() == mPLATFORM_GBA) {
+		m_threadContext.core->setPeripheral(m_threadContext.core, mPERIPH_GBA_MOBILE_ADAPTER, &m_mobile);
+	} else {
 		m_threadContext.core->setPeripheral(m_threadContext.core, mPERIPH_GB_MOBILE_ADAPTER, &m_gbmobile);
 	}
 }
 
 void CoreController::detachMobileAdapter() {
 	Interrupter interrupter(this);
+
 	if (platform() == mPLATFORM_GBA) {
-		QFile fconfig(ConfigController::configDir() + "/mobile_config.bin");
-		if (fconfig.open(QIODevice::WriteOnly)) {
-			fconfig.write((char*) &m_mobile.m.config, MOBILE_CONFIG_SIZE);
-			fconfig.close();
-		}
 		m_threadContext.core->setPeripheral(m_threadContext.core, mPERIPH_GBA_MOBILE_ADAPTER, nullptr);
 	} else {
-		QFile fconfig(ConfigController::configDir() + "/mobile_config.bin");
-		if (fconfig.open(QIODevice::WriteOnly)) {
-			fconfig.write((char*) &m_gbmobile.m.config, MOBILE_CONFIG_SIZE);
-			fconfig.close();
-		}
 		m_threadContext.core->setPeripheral(m_threadContext.core, mPERIPH_GB_MOBILE_ADAPTER, nullptr);
+	}
+
+	QFile fconfig(ConfigController::configDir() + "/mobile_config.bin");
+	if (fconfig.open(QIODevice::WriteOnly)) {
+		fconfig.write((char*) getMobileAdapter()->config, MOBILE_CONFIG_SIZE);
+		fconfig.close();
 	}
 }
 
 void CoreController::getMobileAdapterConfig(int* type, bool* unmetered, QString* dns1, QString* dns2, int* port, QString* relay) {
 	Interrupter interrupter(this);
-	struct mobile_adapter* adapter = (platform() == mPLATFORM_GBA) ? m_mobile.m.adapter : m_gbmobile.m.adapter;
+	struct mobile_adapter* adapter = getMobileAdapter()->adapter;
 	mobile_config_load(adapter);
 	enum mobile_adapter_device device;
 	mobile_config_get_device(adapter, &device, unmetered);
@@ -1225,8 +1223,8 @@ void CoreController::getMobileAdapterConfig(int* type, bool* unmetered, QString*
 
 void CoreController::updateMobileAdapter(QString* userNumber, QString* peerNumber, QString* token) {
 	Interrupter interrupter(this);
-	struct mobile_adapter* adapter = (platform() == mPLATFORM_GBA) ? m_mobile.m.adapter : m_gbmobile.m.adapter;
-	char* number = (char*) ((platform() == mPLATFORM_GBA) ? &m_mobile.m.number : &m_gbmobile.m.number);
+	struct mobile_adapter* adapter = getMobileAdapter()->adapter;
+	char* number = (char*) getMobileAdapter()->number;
 	mobile_loop(adapter);
 	*userNumber = QString(number);
 	*peerNumber = QString(number + MOBILE_MAX_NUMBER_SIZE + 1);
@@ -1244,7 +1242,7 @@ void CoreController::updateMobileAdapter(QString* userNumber, QString* peerNumbe
 
 void CoreController::setMobileAdapterType(int type) {
 	Interrupter interrupter(this);
-	struct mobile_adapter* adapter = (platform() == mPLATFORM_GBA) ? m_mobile.m.adapter : m_gbmobile.m.adapter;
+	struct mobile_adapter* adapter = getMobileAdapter()->adapter;
 	enum mobile_adapter_device tmp;
 	bool unmetered;
 	mobile_config_get_device(adapter, &tmp, &unmetered);
@@ -1253,7 +1251,7 @@ void CoreController::setMobileAdapterType(int type) {
 
 void CoreController::setMobileAdapterUnmetered(bool unmetered) {
 	Interrupter interrupter(this);
-	struct mobile_adapter* adapter = (platform() == mPLATFORM_GBA) ? m_mobile.m.adapter : m_gbmobile.m.adapter;
+	struct mobile_adapter* adapter = getMobileAdapter()->adapter;
 	enum mobile_adapter_device device;
 	bool tmp;
 	mobile_config_get_device(adapter, &device, &tmp);
@@ -1262,7 +1260,7 @@ void CoreController::setMobileAdapterUnmetered(bool unmetered) {
 
 void CoreController::setMobileAdapterDns1(const Address& host, int port) {
 	Interrupter interrupter(this);
-	struct mobile_adapter* adapter = (platform() == mPLATFORM_GBA) ? m_mobile.m.adapter : m_gbmobile.m.adapter;
+	struct mobile_adapter* adapter = getMobileAdapter()->adapter;
 	struct mobile_addr addr;
 	if (host.version == IPV6) {
 		struct mobile_addr6 *addr6 = (struct mobile_addr6*) &addr;
@@ -1280,7 +1278,7 @@ void CoreController::setMobileAdapterDns1(const Address& host, int port) {
 
 void CoreController::clearMobileAdapterDns1() {
 	Interrupter interrupter(this);
-	struct mobile_adapter* adapter = (platform() == mPLATFORM_GBA) ? m_mobile.m.adapter : m_gbmobile.m.adapter;
+	struct mobile_adapter* adapter = getMobileAdapter()->adapter;
 	struct mobile_addr addr = {
 		.type = MOBILE_ADDRTYPE_NONE
 	};
@@ -1289,7 +1287,7 @@ void CoreController::clearMobileAdapterDns1() {
 
 void CoreController::setMobileAdapterDns2(const Address& host, int port) {
 	Interrupter interrupter(this);
-	struct mobile_adapter* adapter = (platform() == mPLATFORM_GBA) ? m_mobile.m.adapter : m_gbmobile.m.adapter;
+	struct mobile_adapter* adapter = getMobileAdapter()->adapter;
 	struct mobile_addr addr;
 	if (host.version == IPV6) {
 		struct mobile_addr6 *addr6 = (struct mobile_addr6*) &addr;
@@ -1307,7 +1305,7 @@ void CoreController::setMobileAdapterDns2(const Address& host, int port) {
 
 void CoreController::clearMobileAdapterDns2() {
 	Interrupter interrupter(this);
-	struct mobile_adapter* adapter = (platform() == mPLATFORM_GBA) ? m_mobile.m.adapter : m_gbmobile.m.adapter;
+	struct mobile_adapter* adapter = getMobileAdapter()->adapter;
 	struct mobile_addr addr = {
 		.type = MOBILE_ADDRTYPE_NONE
 	};
@@ -1316,13 +1314,13 @@ void CoreController::clearMobileAdapterDns2() {
 
 void CoreController::setMobileAdapterPort(int port) {
 	Interrupter interrupter(this);
-	struct mobile_adapter* adapter = (platform() == mPLATFORM_GBA) ? m_mobile.m.adapter : m_gbmobile.m.adapter;
+	struct mobile_adapter* adapter = getMobileAdapter()->adapter;
 	mobile_config_set_p2p_port(adapter, (unsigned) port);
 }
 
 void CoreController::setMobileAdapterRelay(const Address& host, int port) {
 	Interrupter interrupter(this);
-	struct mobile_adapter* adapter = (platform() == mPLATFORM_GBA) ? m_mobile.m.adapter : m_gbmobile.m.adapter;
+	struct mobile_adapter* adapter = getMobileAdapter()->adapter;
 	struct mobile_addr addr;
 	if (host.version == IPV6) {
 		struct mobile_addr6 *addr6 = (struct mobile_addr6*) &addr;
@@ -1340,7 +1338,7 @@ void CoreController::setMobileAdapterRelay(const Address& host, int port) {
 
 void CoreController::clearMobileAdapterRelay() {
 	Interrupter interrupter(this);
-	struct mobile_adapter* adapter = (platform() == mPLATFORM_GBA) ? m_mobile.m.adapter : m_gbmobile.m.adapter;
+	struct mobile_adapter* adapter = getMobileAdapter()->adapter;
 	struct mobile_addr addr = {
 		.type = MOBILE_ADDRTYPE_NONE
 	};
@@ -1349,7 +1347,7 @@ void CoreController::clearMobileAdapterRelay() {
 
 bool CoreController::setMobileAdapterToken(const QString& qToken) {
 	Interrupter interrupter(this);
-	struct mobile_adapter* adapter = (platform() == mPLATFORM_GBA) ? m_mobile.m.adapter : m_gbmobile.m.adapter;
+	struct mobile_adapter* adapter = getMobileAdapter()->adapter;
 	if (qToken.size() != MOBILE_RELAY_TOKEN_SIZE * 2) {
 		mobile_config_set_relay_token(adapter, nullptr);
 		return false;
