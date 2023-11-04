@@ -285,7 +285,6 @@ static inline int SocketOpen(Socket sock, int port, const struct Address* bindAd
 	err = setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(enable));
 #endif
 	if (err) {
-		SocketCloseQuiet(sock);
 		return err;
 	}
 
