@@ -286,7 +286,7 @@ static inline int SocketOpen(Socket sock, int port, const struct Address* bindAd
 #endif
 	if (err) {
 		SocketCloseQuiet(sock);
-		return INVALID_SOCKET;
+		return err;
 	}
 
 	if (!bindAddress) {
