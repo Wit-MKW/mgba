@@ -1146,16 +1146,16 @@ void CoreController::detachMobileAdapter() {
 	}
 }
 
-void CoreController::getMobileAdapterConfig(int* type, bool* unmetered, QString* dns1, QString* dns2, int* port, QString* relay) {
+void CoreController::getMobileAdapterConfig(int* type, bool* unmetered, QString* dns1, QString* dns2, int* p2p_port, QString* relay) {
 	Interrupter interrupter(this);
 	struct mobile_adapter* adapter = getMobileAdapter()->adapter;
-	mobile_config_load(adapter);
+
 	enum mobile_adapter_device device;
 	mobile_config_get_device(adapter, &device, unmetered);
-	*type = (int) (device - MOBILE_ADAPTER_BLUE);
-	struct mobile_addr dns1_get, dns2_get;
+	*type = (int) device - MOBILE_ADAPTER_BLUE;
+
+	struct mobile_addr dns1_get;
 	mobile_config_get_dns(adapter, &dns1_get, MOBILE_DNS1);
-	mobile_config_get_dns(adapter, &dns2_get, MOBILE_DNS2);
 	dns1->clear();
 	if (dns1_get.type == MOBILE_ADDRTYPE_IPV6) {
 		struct mobile_addr6* addr6 = (struct mobile_addr6*) &dns1_get;
@@ -1176,6 +1176,9 @@ void CoreController::getMobileAdapterConfig(int* type, bool* unmetered, QString*
 			*dns1 += QString(':') + tmp;
 		}
 	}
+
+	struct mobile_addr dns2_get;
+	mobile_config_get_dns(adapter, &dns2_get, MOBILE_DNS2);
 	dns2->clear();
 	if (dns2_get.type == MOBILE_ADDRTYPE_IPV6) {
 		struct mobile_addr6* addr6 = (struct mobile_addr6*) &dns2_get;
@@ -1196,7 +1199,9 @@ void CoreController::getMobileAdapterConfig(int* type, bool* unmetered, QString*
 			*dns2 += QString(':') + tmp;
 		}
 	}
-	mobile_config_get_p2p_port(adapter, (unsigned*) port);
+
+	mobile_config_get_p2p_port(adapter, (unsigned*) p2p_port);
+
 	struct mobile_addr relay_get;
 	mobile_config_get_relay(adapter, &relay_get);
 	relay->clear();
@@ -1224,10 +1229,11 @@ void CoreController::getMobileAdapterConfig(int* type, bool* unmetered, QString*
 void CoreController::updateMobileAdapter(QString* userNumber, QString* peerNumber, QString* token) {
 	Interrupter interrupter(this);
 	struct mobile_adapter* adapter = getMobileAdapter()->adapter;
-	char* number = (char*) getMobileAdapter()->number;
-	mobile_loop(adapter);
-	*userNumber = QString(number);
-	*peerNumber = QString(number + MOBILE_MAX_NUMBER_SIZE + 1);
+
+	char (* number)[MOBILE_MAX_NUMBER_SIZE + 1] = getMobileAdapter()->number;
+	*userNumber = QString(number[0]);
+	*peerNumber = QString(number[1]);
+
 	token->clear();
 	unsigned char token_get[MOBILE_RELAY_TOKEN_SIZE];
 	if (!mobile_config_get_relay_token(adapter, token_get)) {
@@ -1243,6 +1249,7 @@ void CoreController::updateMobileAdapter(QString* userNumber, QString* peerNumbe
 void CoreController::setMobileAdapterType(int type) {
 	Interrupter interrupter(this);
 	struct mobile_adapter* adapter = getMobileAdapter()->adapter;
+
 	enum mobile_adapter_device tmp;
 	bool unmetered;
 	mobile_config_get_device(adapter, &tmp, &unmetered);
@@ -1252,15 +1259,15 @@ void CoreController::setMobileAdapterType(int type) {
 void CoreController::setMobileAdapterUnmetered(bool unmetered) {
 	Interrupter interrupter(this);
 	struct mobile_adapter* adapter = getMobileAdapter()->adapter;
+
 	enum mobile_adapter_device device;
 	bool tmp;
 	mobile_config_get_device(adapter, &device, &tmp);
 	mobile_config_set_device(adapter, device, unmetered);
 }
 
-void CoreController::setMobileAdapterDns1(const Address& host, int port) {
-	Interrupter interrupter(this);
-	struct mobile_adapter* adapter = getMobileAdapter()->adapter;
+static struct mobile_addr convertMobileAddr(const Address& host, int port)
+{
 	struct mobile_addr addr;
 	if (host.version == IPV6) {
 		struct mobile_addr6 *addr6 = (struct mobile_addr6*) &addr;
@@ -1273,12 +1280,21 @@ void CoreController::setMobileAdapterDns1(const Address& host, int port) {
 		*(uint32_t*) &addr4->host = htonl(host.ipv4);
 		addr4->port = port;
 	}
+	return addr;
+}
+
+void CoreController::setMobileAdapterDns1(const Address& host, int port) {
+	Interrupter interrupter(this);
+	struct mobile_adapter* adapter = getMobileAdapter()->adapter;
+
+	struct mobile_addr addr = convertMobileAddr(host, port);
 	mobile_config_set_dns(adapter, &addr, MOBILE_DNS1);
 }
 
 void CoreController::clearMobileAdapterDns1() {
 	Interrupter interrupter(this);
 	struct mobile_adapter* adapter = getMobileAdapter()->adapter;
+
 	struct mobile_addr addr = {
 		.type = MOBILE_ADDRTYPE_NONE
 	};
@@ -1288,24 +1304,15 @@ void CoreController::clearMobileAdapterDns1() {
 void CoreController::setMobileAdapterDns2(const Address& host, int port) {
 	Interrupter interrupter(this);
 	struct mobile_adapter* adapter = getMobileAdapter()->adapter;
-	struct mobile_addr addr;
-	if (host.version == IPV6) {
-		struct mobile_addr6 *addr6 = (struct mobile_addr6*) &addr;
-		addr6->type = MOBILE_ADDRTYPE_IPV6;
-		memcpy(&addr6->host, &host.ipv6, MOBILE_HOSTLEN_IPV6);
-		addr6->port = port;
-	} else {
-		struct mobile_addr4 *addr4 = (struct mobile_addr4*) &addr;
-		addr4->type = MOBILE_ADDRTYPE_IPV4;
-		*(uint32_t*) &addr4->host = htonl(host.ipv4);
-		addr4->port = port;
-	}
+
+	struct mobile_addr addr = convertMobileAddr(host, port);
 	mobile_config_set_dns(adapter, &addr, MOBILE_DNS2);
 }
 
 void CoreController::clearMobileAdapterDns2() {
 	Interrupter interrupter(this);
 	struct mobile_adapter* adapter = getMobileAdapter()->adapter;
+
 	struct mobile_addr addr = {
 		.type = MOBILE_ADDRTYPE_NONE
 	};
@@ -1315,30 +1322,22 @@ void CoreController::clearMobileAdapterDns2() {
 void CoreController::setMobileAdapterPort(int port) {
 	Interrupter interrupter(this);
 	struct mobile_adapter* adapter = getMobileAdapter()->adapter;
+
 	mobile_config_set_p2p_port(adapter, (unsigned) port);
 }
 
 void CoreController::setMobileAdapterRelay(const Address& host, int port) {
 	Interrupter interrupter(this);
 	struct mobile_adapter* adapter = getMobileAdapter()->adapter;
-	struct mobile_addr addr;
-	if (host.version == IPV6) {
-		struct mobile_addr6 *addr6 = (struct mobile_addr6*) &addr;
-		addr6->type = MOBILE_ADDRTYPE_IPV6;
-		memcpy(&addr6->host, &host.ipv6, MOBILE_HOSTLEN_IPV6);
-		addr6->port = port;
-	} else {
-		struct mobile_addr4 *addr4 = (struct mobile_addr4*) &addr;
-		addr4->type = MOBILE_ADDRTYPE_IPV4;
-		*(uint32_t*) &addr4->host = htonl(host.ipv4);
-		addr4->port = port;
-	}
+
+	struct mobile_addr addr = convertMobileAddr(host, port);
 	mobile_config_set_relay(adapter, &addr);
 }
 
 void CoreController::clearMobileAdapterRelay() {
 	Interrupter interrupter(this);
 	struct mobile_adapter* adapter = getMobileAdapter()->adapter;
+
 	struct mobile_addr addr = {
 		.type = MOBILE_ADDRTYPE_NONE
 	};
@@ -1348,6 +1347,7 @@ void CoreController::clearMobileAdapterRelay() {
 bool CoreController::setMobileAdapterToken(const QString& qToken) {
 	Interrupter interrupter(this);
 	struct mobile_adapter* adapter = getMobileAdapter()->adapter;
+
 	if (qToken.size() != MOBILE_RELAY_TOKEN_SIZE * 2) {
 		mobile_config_set_relay_token(adapter, nullptr);
 		return false;
