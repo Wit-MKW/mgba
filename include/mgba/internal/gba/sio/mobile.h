@@ -17,6 +17,7 @@ struct GBASIOMobileAdapter {
 };
 
 void GBASIOMobileAdapterCreate(struct GBASIOMobileAdapter*);
+void GBASIOMobileAdapterUpdate(struct GBASIOMobileAdapter*);
 
 CXX_GUARD_END
 

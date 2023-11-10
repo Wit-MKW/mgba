@@ -13,6 +13,7 @@ CXX_GUARD_START
 #include <mgba/core/log.h>
 #include <mgba/core/timing.h>
 #include <mgba/gb/interface.h>
+#include <mgba/internal/gb/sio/mobile.h>
 
 #define MAX_GBS 2
 
@@ -33,6 +34,8 @@ struct GBSIO {
 	int remainingBits;
 
 	uint8_t pendingSB;
+
+	struct GBSIOMobileAdapter* magb;
 };
 
 DECL_BITFIELD(GBRegisterSC, uint8_t);

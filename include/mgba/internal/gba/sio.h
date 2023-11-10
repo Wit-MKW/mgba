@@ -13,6 +13,7 @@ CXX_GUARD_START
 #include <mgba/core/log.h>
 #include <mgba/gba/interface.h>
 #include <mgba/internal/gba/sio/gbp.h>
+#include <mgba/internal/gba/sio/mobile.h>
 
 #define MAX_GBAS 4
 
@@ -73,6 +74,7 @@ struct GBASIO {
 
 	struct GBASIOPlayer gbp;
 	struct mTimingEvent completeEvent;
+	struct GBASIOMobileAdapter* magb;
 };
 
 void GBASIOInit(struct GBASIO* sio);

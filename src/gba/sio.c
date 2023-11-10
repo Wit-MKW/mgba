@@ -80,6 +80,8 @@ void GBASIOInit(struct GBASIO* sio) {
 	sio->gbp.p = sio->p;
 	GBASIOPlayerInit(&sio->gbp);
 
+	sio->magb = NULL;
+
 	GBASIOReset(sio);
 }
 

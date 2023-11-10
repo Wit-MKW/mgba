@@ -41,6 +41,11 @@ void GBSIOMobileAdapterCreate(struct GBSIOMobileAdapter* mobile) {
 	mobile->m.p = mobile;
 }
 
+void GBSIOMobileAdapterUpdate(struct GBSIOMobileAdapter* mobile) {
+	if (!mobile->m.adapter) return;
+	mobile_loop(mobile->m.adapter);
+}
+
 bool GBSIOMobileAdapterInit(struct GBSIODriver* driver) {
 	struct GBSIOMobileAdapter* mobile = (struct GBSIOMobileAdapter*) driver;
 	mobile->m.adapter = MobileAdapterGBNew(&mobile->m);

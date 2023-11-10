@@ -1210,6 +1210,10 @@ void GBFrameEnded(struct GB* gb) {
 		gb->stream->postVideoFrame(gb->stream, pixels, stride);
 	}
 
+	if (gb->sio.magb) {
+		GBSIOMobileAdapterUpdate(gb->sio.magb);
+	}
+
 	size_t c;
 	for (c = 0; c < mCoreCallbacksListSize(&gb->coreCallbacks); ++c) {
 		struct mCoreCallbacks* callbacks = mCoreCallbacksListGetPointer(&gb->coreCallbacks, c);

@@ -26,6 +26,8 @@ void GBSIOInit(struct GBSIO* sio) {
 	sio->event.priority = 0x30;
 
 	sio->driver = NULL;
+
+	sio->magb = NULL;
 }
 
 void GBSIOReset(struct GBSIO* sio) {

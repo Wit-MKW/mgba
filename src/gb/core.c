@@ -832,6 +832,7 @@ static void _GBCoreSetPeripheral(struct mCore* core, int type, void* periph) {
 		gb->memory.cam = periph;
 		break;
 	case mPERIPH_GB_MOBILE_ADAPTER:
+		gb->sio.magb = periph;
 		GBSIOSetDriver(&gb->sio, periph);
 		break;
 	default:

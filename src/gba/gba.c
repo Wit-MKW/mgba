@@ -990,6 +990,9 @@ void GBAFrameEnded(struct GBA* gba) {
 	if (gba->memory.hw.devices & (HW_GB_PLAYER | HW_GB_PLAYER_DETECTION)) {
 		GBASIOPlayerUpdate(gba);
 	}
+	if (gba->sio.magb) {
+		GBASIOMobileAdapterUpdate(gba->sio.magb);
+	}
 
 	struct mRumble* rumble = gba->rumble;
 	if (rumble && rumble->integrate) {
