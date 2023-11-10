@@ -913,6 +913,7 @@ static void _GBACoreSetPeripheral(struct mCore* core, int type, void* periph) {
 		GBASIOSetDriver(&gba->sio, periph, SIO_NORMAL_32);
 		break;
 	case mPERIPH_GBA_MOBILE_ADAPTER:
+		gba->sio.magb = periph;
 		GBASIOSetDriver(&gba->sio, periph, SIO_NORMAL_8);
 		GBASIOSetDriver(&gba->sio, periph, SIO_NORMAL_32);
 		break;
