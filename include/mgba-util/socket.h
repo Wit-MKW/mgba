@@ -274,7 +274,7 @@ static inline Socket SocketCreate(bool useIPv6, int type, int protocol) {
 
 static inline int SocketOpen(Socket sock, int port, const struct Address* bindAddress) {
 	bool useIPv6 = bindAddress && (bindAddress->version == IPV6);
-	int err = -1;
+	int err;
 
 	const int enable = 1;
 #ifdef GEKKO
@@ -359,7 +359,7 @@ static inline Socket SocketOpenUDP(int port, const struct Address* bindAddress) 
 }
 
 static inline int SocketConnect(Socket sock, int port, const struct Address* destinationAddress) {
-	int err = -1;
+	int err;
 
 	if (!destinationAddress) {
 		struct sockaddr_in bindInfo;
@@ -432,7 +432,7 @@ static inline Socket SocketAccept(Socket socket, struct Address* address) {
 		socklen_t len = sizeof(addrInfo);
 		return net_accept(socket, (struct sockaddr*) &addrInfo, &len);
 #else
-		return accept(socket, NULL, NULL);
+		return accept(socket, 0, 0);
 #endif
 	}
 	if (address->version == IPV4) {
