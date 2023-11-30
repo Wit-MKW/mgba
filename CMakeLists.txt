@@ -525,7 +525,6 @@ find_feature(USE_EPOXY "epoxy")
 find_feature(USE_CMOCKA "cmocka")
 find_feature(USE_SQLITE3 "SQLite3|sqlite3")
 find_feature(USE_ELF "libelf")
-find_feature(USE_LIBMOBILE "libmobile")
 find_feature(ENABLE_PYTHON "PythonLibs")
 
 # Features

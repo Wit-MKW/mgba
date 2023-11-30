@@ -27,15 +27,6 @@ MobileAdapterView::MobileAdapterView(std::shared_ptr<CoreController> controller,
 {
 	m_ui.setupUi(this);
 
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
-	int size = QFontMetrics(QFont()).height() / ((int) ceil(devicePixelRatioF()) * 12);
-#else
-	int size = QFontMetrics(QFont()).height() / (devicePixelRatio() * 12);
-#endif
-	if (!size) {
-		size = 1;
-	}
-
 	QRegularExpression reToken("[\\dA-Fa-f]{32}?");
 	QRegularExpressionValidator vToken(reToken, m_ui.setToken);
 	m_ui.setToken->setValidator(&vToken);
@@ -94,7 +85,7 @@ void MobileAdapterView::setDns1() {
 			addrtext.remove(0, 1);
 			addrtext.remove(-1, 1);
 		}
-		qaddress.setAddress(addrtext);
+		if (!qaddress.setAddress(addrtext)) goto error;
 	}
 	convertAddress(&qaddress, &address);
 	m_controller->setMobileAdapterDns1(address, port);
@@ -126,7 +117,7 @@ void MobileAdapterView::setDns2() {
 			addrtext.remove(0, 1);
 			addrtext.remove(-1, 1);
 		}
-		qaddress.setAddress(addrtext);
+		if (!qaddress.setAddress(addrtext)) goto error;
 	}
 	convertAddress(&qaddress, &address);
 	m_controller->setMobileAdapterDns2(address, port);
@@ -163,7 +154,7 @@ void MobileAdapterView::setRelay() {
 			addrtext.remove(0, 1);
 			addrtext.remove(-1, 1);
 		}
-		qaddress.setAddress(addrtext);
+		if (!qaddress.setAddress(addrtext)) goto error;
 	}
 	convertAddress(&qaddress, &address);
 	m_controller->setMobileAdapterRelay(address, port);
