@@ -19,6 +19,45 @@
 
 using namespace QGBA;
 
+static int mobileConvertAddr(const QString& addr, Address *output, unsigned *port) {
+	QHostAddress qaddress;
+	if (addr.isEmpty()) {
+		return 0;
+	}
+	bool hasPort = false;
+	unsigned portInt = *port;
+	if (!qaddress.setAddress(addr)) {
+		QString portText = addr.section(':', -1);
+		QString mainText = addr.section(':', 0, -2);
+		hasPort = false;
+		portInt = portText.toUInt(&hasPort);
+		if (!hasPort || mainText.contains(':')) {
+			if (!mainText.startsWith('[')) {
+				return -1;
+			}
+			if (!mainText.endsWith(']')) {
+				if (!portText.endsWith(']')) {
+					return -1;
+				}
+				mainText += QString(':') + portText;
+				hasPort = false;
+			}
+			mainText.remove(0, 1);
+			mainText.remove(-1, 1);
+		}
+		if (!qaddress.setAddress(mainText)) {
+			return -1;
+		}
+	}
+	if (!convertAddress(&qaddress, output)) {
+		return -1;
+	}
+	if (hasPort) {
+		*port = portInt;
+	}
+	return 1;
+}
+
 MobileAdapterView::MobileAdapterView(std::shared_ptr<CoreController> controller, Window* window, QWidget* parent)
 	: QDialog(parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint)
 	, m_tokenFilled(false)
@@ -63,65 +102,27 @@ void MobileAdapterView::setUnmetered(bool unmetered) {
 
 void MobileAdapterView::setDns1() {
 	unsigned port = MOBILE_DNS_PORT;
-	QHostAddress qaddress;
-	Address address;
-	QString addrtext = m_ui.setDns1->text();
-	if (addrtext.isEmpty()) {
+	QString text = m_ui.setDns1->text();
+	Address addr;
+	int res = mobileConvertAddr(text, &addr, &port);
+	if (res == 1) {
+		m_controller->setMobileAdapterDns1(addr, port);
+	} else if (res == 0) {
 		m_controller->clearMobileAdapterDns1();
-		goto error;
 	}
-	if (!qaddress.setAddress(addrtext)) {
-		QString porttext = addrtext.section(':', -1);
-		addrtext = addrtext.section(':', 0, -2);
-		bool ok = false;
-		port = porttext.toUInt(&ok);
-		if (!ok || addrtext.contains(':')) {
-			if (!addrtext.startsWith('[')) goto error;
-			if (!addrtext.endsWith(']')) {
-				if (!porttext.endsWith(']')) goto error;
-				addrtext += QString(':') + porttext;
-				port = MOBILE_DNS_PORT;
-			}
-			addrtext.remove(0, 1);
-			addrtext.remove(-1, 1);
-		}
-		if (!qaddress.setAddress(addrtext)) goto error;
-	}
-	convertAddress(&qaddress, &address);
-	m_controller->setMobileAdapterDns1(address, port);
-error:
 	getConfig();
 }
 
 void MobileAdapterView::setDns2() {
 	unsigned port = MOBILE_DNS_PORT;
-	QHostAddress qaddress;
-	Address address;
-	QString addrtext = m_ui.setDns2->text();
-	if (addrtext.isEmpty()) {
+	QString text = m_ui.setDns2->text();
+	Address addr;
+	int res = mobileConvertAddr(text, &addr, &port);
+	if (res == 1) {
+		m_controller->setMobileAdapterDns2(addr, port);
+	} else if (res == 0) {
 		m_controller->clearMobileAdapterDns2();
-		goto error;
 	}
-	if (!qaddress.setAddress(addrtext)) {
-		QString porttext = addrtext.section(':', -1);
-		addrtext = addrtext.section(':', 0, -2);
-		bool ok = false;
-		port = porttext.toUInt(&ok);
-		if (!ok || addrtext.contains(':')) {
-			if (!addrtext.startsWith('[')) goto error;
-			if (!addrtext.endsWith(']')) {
-				if (!porttext.endsWith(']')) goto error;
-				addrtext += QString(':') + porttext;
-				port = MOBILE_DNS_PORT;
-			}
-			addrtext.remove(0, 1);
-			addrtext.remove(-1, 1);
-		}
-		if (!qaddress.setAddress(addrtext)) goto error;
-	}
-	convertAddress(&qaddress, &address);
-	m_controller->setMobileAdapterDns2(address, port);
-error:
 	getConfig();
 }
 
@@ -132,33 +133,14 @@ void MobileAdapterView::setPort(int port) {
 
 void MobileAdapterView::setRelay() {
 	unsigned port = MOBILE_DEFAULT_RELAY_PORT;
-	QHostAddress qaddress;
-	Address address;
-	QString addrtext = m_ui.setRelay->text();
-	if (addrtext.isEmpty()) {
+	QString text = m_ui.setRelay->text();
+	Address addr;
+	int res = mobileConvertAddr(text, &addr, &port);
+	if (res == 1) {
+		m_controller->setMobileAdapterRelay(addr, port);
+	} else if (res == 0) {
 		m_controller->clearMobileAdapterRelay();
-		goto error;
 	}
-	if (!qaddress.setAddress(addrtext)) {
-		QString porttext = addrtext.section(':', -1);
-		addrtext = addrtext.section(':', 0, -2);
-		bool ok = false;
-		port = porttext.toUInt(&ok);
-		if (!ok || addrtext.contains(':')) {
-			if (!addrtext.startsWith('[')) goto error;
-			if (!addrtext.endsWith(']')) {
-				if (!porttext.endsWith(']')) goto error;
-				addrtext += QString(':') + porttext;
-				port = MOBILE_DEFAULT_RELAY_PORT;
-			}
-			addrtext.remove(0, 1);
-			addrtext.remove(-1, 1);
-		}
-		if (!qaddress.setAddress(addrtext)) goto error;
-	}
-	convertAddress(&qaddress, &address);
-	m_controller->setMobileAdapterRelay(address, port);
-error:
 	getConfig();
 }
 
@@ -196,6 +178,7 @@ void MobileAdapterView::getConfig() {
 }
 
 void MobileAdapterView::advanceFrameCounter() {
+	// TODO: get this out of the UI thread?
 	QString userNumber, peerNumber, token;
 	m_controller->updateMobileAdapter(&userNumber, &peerNumber, &token);
 	m_ui.userNumber->setText(userNumber);

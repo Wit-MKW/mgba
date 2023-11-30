@@ -1153,11 +1153,11 @@ void CoreController::getMobileAdapterConfig(int* type, bool* unmetered, QString*
 	mobile_config_get_device(adapter, &device, unmetered);
 	*type = (int) device - MOBILE_ADAPTER_BLUE;
 
-	struct mobile_addr dns1_get;
-	mobile_config_get_dns(adapter, &dns1_get, MOBILE_DNS1);
+	struct mobile_addr dns1Get;
+	mobile_config_get_dns(adapter, &dns1Get, MOBILE_DNS1);
 	dns1->clear();
-	if (dns1_get.type == MOBILE_ADDRTYPE_IPV6) {
-		struct mobile_addr6* addr6 = (struct mobile_addr6*) &dns1_get;
+	if (dns1Get.type == MOBILE_ADDRTYPE_IPV6) {
+		struct mobile_addr6* addr6 = (struct mobile_addr6*) &dns1Get;
 		QHostAddress qaddress(addr6->host);
 		*dns1 = qaddress.toString();
 		if (addr6->port != 53) {
@@ -1165,8 +1165,8 @@ void CoreController::getMobileAdapterConfig(int* type, bool* unmetered, QString*
 			tmp.setNum(addr6->port);
 			*dns1 = QString('[') + *dns1 + "]:" + tmp;
 		}
-	} else if (dns1_get.type == MOBILE_ADDRTYPE_IPV4) {
-		struct mobile_addr4* addr4 = (struct mobile_addr4*) &dns1_get;
+	} else if (dns1Get.type == MOBILE_ADDRTYPE_IPV4) {
+		struct mobile_addr4* addr4 = (struct mobile_addr4*) &dns1Get;
 		QHostAddress qaddress(ntohl(*(unsigned*) addr4->host));
 		*dns1 = qaddress.toString();
 		if (addr4->port != 53) {
@@ -1176,11 +1176,11 @@ void CoreController::getMobileAdapterConfig(int* type, bool* unmetered, QString*
 		}
 	}
 
-	struct mobile_addr dns2_get;
-	mobile_config_get_dns(adapter, &dns2_get, MOBILE_DNS2);
+	struct mobile_addr dns2Get;
+	mobile_config_get_dns(adapter, &dns2Get, MOBILE_DNS2);
 	dns2->clear();
-	if (dns2_get.type == MOBILE_ADDRTYPE_IPV6) {
-		struct mobile_addr6* addr6 = (struct mobile_addr6*) &dns2_get;
+	if (dns2Get.type == MOBILE_ADDRTYPE_IPV6) {
+		struct mobile_addr6* addr6 = (struct mobile_addr6*) &dns2Get;
 		QHostAddress qaddress(addr6->host);
 		*dns2 = qaddress.toString();
 		if (addr6->port != 53) {
@@ -1188,8 +1188,8 @@ void CoreController::getMobileAdapterConfig(int* type, bool* unmetered, QString*
 			tmp.setNum(addr6->port);
 			*dns2 = QString('[') + *dns2 + "]:" + tmp;
 		}
-	} else if (dns2_get.type == MOBILE_ADDRTYPE_IPV4) {
-		struct mobile_addr4* addr4 = (struct mobile_addr4*) &dns2_get;
+	} else if (dns2Get.type == MOBILE_ADDRTYPE_IPV4) {
+		struct mobile_addr4* addr4 = (struct mobile_addr4*) &dns2Get;
 		QHostAddress qaddress(ntohl(*(unsigned*) addr4->host));
 		*dns2 = qaddress.toString();
 		if (addr4->port != 53) {
@@ -1201,11 +1201,11 @@ void CoreController::getMobileAdapterConfig(int* type, bool* unmetered, QString*
 
 	mobile_config_get_p2p_port(adapter, (unsigned*) p2p_port);
 
-	struct mobile_addr relay_get;
-	mobile_config_get_relay(adapter, &relay_get);
+	struct mobile_addr relayGet;
+	mobile_config_get_relay(adapter, &relayGet);
 	relay->clear();
-	if (relay_get.type == MOBILE_ADDRTYPE_IPV6) {
-		struct mobile_addr6* addr6 = (struct mobile_addr6*) &relay_get;
+	if (relayGet.type == MOBILE_ADDRTYPE_IPV6) {
+		struct mobile_addr6* addr6 = (struct mobile_addr6*) &relayGet;
 		QHostAddress qaddress(addr6->host);
 		*relay = qaddress.toString();
 		if (addr6->port != 31227) {
@@ -1213,8 +1213,8 @@ void CoreController::getMobileAdapterConfig(int* type, bool* unmetered, QString*
 			tmp.setNum(addr6->port);
 			*relay = QString('[') + *relay + "]:" + tmp;
 		}
-	} else if (relay_get.type == MOBILE_ADDRTYPE_IPV4) {
-		struct mobile_addr4* addr4 = (struct mobile_addr4*) &relay_get;
+	} else if (relayGet.type == MOBILE_ADDRTYPE_IPV4) {
+		struct mobile_addr4* addr4 = (struct mobile_addr4*) &relayGet;
 		QHostAddress qaddress(ntohl(*(unsigned*) addr4->host));
 		*relay = qaddress.toString();
 		if (addr4->port != 31227) {
