@@ -1160,7 +1160,7 @@ void CoreController::getMobileAdapterConfig(int* type, bool* unmetered, QString*
 		struct mobile_addr6* addr6 = (struct mobile_addr6*) &dns1Get;
 		QHostAddress qaddress(addr6->host);
 		*dns1 = qaddress.toString();
-		if (addr6->port != 53) {
+		if (addr6->port != MOBILE_DNS_PORT) {
 			QString tmp;
 			tmp.setNum(addr6->port);
 			*dns1 = QString('[') + *dns1 + "]:" + tmp;
@@ -1169,7 +1169,7 @@ void CoreController::getMobileAdapterConfig(int* type, bool* unmetered, QString*
 		struct mobile_addr4* addr4 = (struct mobile_addr4*) &dns1Get;
 		QHostAddress qaddress(ntohl(*(unsigned*) addr4->host));
 		*dns1 = qaddress.toString();
-		if (addr4->port != 53) {
+		if (addr4->port != MOBILE_DNS_PORT) {
 			QString tmp;
 			tmp.setNum(addr4->port);
 			*dns1 += QString(':') + tmp;
@@ -1183,7 +1183,7 @@ void CoreController::getMobileAdapterConfig(int* type, bool* unmetered, QString*
 		struct mobile_addr6* addr6 = (struct mobile_addr6*) &dns2Get;
 		QHostAddress qaddress(addr6->host);
 		*dns2 = qaddress.toString();
-		if (addr6->port != 53) {
+		if (addr6->port != MOBILE_DNS_PORT) {
 			QString tmp;
 			tmp.setNum(addr6->port);
 			*dns2 = QString('[') + *dns2 + "]:" + tmp;
@@ -1192,7 +1192,7 @@ void CoreController::getMobileAdapterConfig(int* type, bool* unmetered, QString*
 		struct mobile_addr4* addr4 = (struct mobile_addr4*) &dns2Get;
 		QHostAddress qaddress(ntohl(*(unsigned*) addr4->host));
 		*dns2 = qaddress.toString();
-		if (addr4->port != 53) {
+		if (addr4->port != MOBILE_DNS_PORT) {
 			QString tmp;
 			tmp.setNum(addr4->port);
 			*dns2 += QString(':') + tmp;
@@ -1208,7 +1208,7 @@ void CoreController::getMobileAdapterConfig(int* type, bool* unmetered, QString*
 		struct mobile_addr6* addr6 = (struct mobile_addr6*) &relayGet;
 		QHostAddress qaddress(addr6->host);
 		*relay = qaddress.toString();
-		if (addr6->port != 31227) {
+		if (addr6->port != MOBILE_DEFAULT_RELAY_PORT) {
 			QString tmp;
 			tmp.setNum(addr6->port);
 			*relay = QString('[') + *relay + "]:" + tmp;
@@ -1217,7 +1217,7 @@ void CoreController::getMobileAdapterConfig(int* type, bool* unmetered, QString*
 		struct mobile_addr4* addr4 = (struct mobile_addr4*) &relayGet;
 		QHostAddress qaddress(ntohl(*(unsigned*) addr4->host));
 		*relay = qaddress.toString();
-		if (addr4->port != 31227) {
+		if (addr4->port != MOBILE_DEFAULT_RELAY_PORT) {
 			QString tmp;
 			tmp.setNum(addr4->port);
 			*relay += QString(':') + tmp;
