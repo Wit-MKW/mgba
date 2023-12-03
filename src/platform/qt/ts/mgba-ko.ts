@@ -6636,6 +6636,11 @@ Download size: %3</source>
         <translation>게임 보이 프린터...</translation>
     </message>
     <message>
+        <location filename="../Window.cpp" line="1512"/>
+        <source>Mobile Game Boy Adapter...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../Window.cpp" line="379"/>
         <source>Save games (%1)</source>
         <translation>게임 (%1) 저장</translation>

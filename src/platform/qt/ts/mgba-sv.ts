@@ -6557,6 +6557,11 @@ Nedladdningsstorlek: %3</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../Window.cpp" line="1512"/>
+        <source>Mobile Game Boy Adapter...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../Window.cpp" line="1507"/>
         <source>BattleChip Gate...</source>
         <translation type="unfinished"></translation>

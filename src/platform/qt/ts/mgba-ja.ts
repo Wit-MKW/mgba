@@ -3752,7 +3752,7 @@ Download size: %3</source>
     <message>
         <location filename="../MobileAdapterView.ui" line="14"/>
         <source>Mobile Game Boy Adapter</source>
-        <translation type="unfinished"></translation>
+        <translation>モバイルアダプターGB</translation>
     </message>
     <message>
         <location filename="../MobileAdapterView.ui" line="22"/>
@@ -6605,6 +6605,11 @@ Download size: %3</source>
         <location filename="../Window.cpp" line="1498"/>
         <source>Game Boy Printer...</source>
         <translation>ポケットプリンタ...</translation>
+    </message>
+    <message>
+        <location filename="../Window.cpp" line="1512"/>
+        <source>Mobile Game Boy Adapter...</source>
+        <translation>モバイルアダプターGB...</translation>
     </message>
     <message>
         <location filename="../Window.cpp" line="1143"/>

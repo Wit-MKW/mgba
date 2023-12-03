@@ -3770,7 +3770,7 @@ Taille du téléchargement&#xa0;:&#xa0;%3</translation>
     <message>
         <location filename="../MobileAdapterView.ui" line="14"/>
         <source>Mobile Game Boy Adapter</source>
-        <translation type="unfinished"></translation>
+        <translation>Adaptateur Mobile pour Game Boy</translation>
     </message>
     <message>
         <location filename="../MobileAdapterView.ui" line="22"/>
@@ -3820,7 +3820,7 @@ Taille du téléchargement&#xa0;:&#xa0;%3</translation>
     <message>
         <location filename="../MobileAdapterView.ui" line="73"/>
         <source>Unmetered</source>
-        <translation type="unfinished"></translation>
+        <translation>Illimité</translation>
     </message>
     <message>
         <location filename="../MobileAdapterView.ui" line="80"/>
@@ -3835,7 +3835,7 @@ Taille du téléchargement&#xa0;:&#xa0;%3</translation>
     <message>
         <location filename="../MobileAdapterView.ui" line="100"/>
         <source>P2P port:</source>
-        <translation type="unfinished"></translation>
+        <translation>Port à direct:</translation>
     </message>
     <message>
         <location filename="../MobileAdapterView.ui" line="117"/>
@@ -3845,12 +3845,12 @@ Taille du téléchargement&#xa0;:&#xa0;%3</translation>
     <message>
         <location filename="../MobileAdapterView.ui" line="127"/>
         <source>Relay token:</source>
-        <translation type="unfinished"></translation>
+        <translation>Identifiant du relais:</translation>
     </message>
     <message>
         <location filename="../MobileAdapterView.ui" line="144"/>
         <source>Copy relay token</source>
-        <translation type="unfinished"></translation>
+        <translation>Copier l'identifiant</translation>
     </message>
     <message>
         <location filename="../MobileAdapterView.ui" line="151"/>
@@ -6540,6 +6540,11 @@ Taille du téléchargement&#xa0;:&#xa0;%3</translation>
         <location filename="../Window.cpp" line="1498"/>
         <source>Game Boy Printer...</source>
         <translation>Imprimante GameBoy…</translation>
+    </message>
+    <message>
+        <location filename="../Window.cpp" line="1512"/>
+        <source>Mobile Game Boy Adapter...</source>
+        <translation>Adaptateur Mobile pour Game Boy...</translation>
     </message>
     <message>
         <location filename="../Window.cpp" line="1637"/>

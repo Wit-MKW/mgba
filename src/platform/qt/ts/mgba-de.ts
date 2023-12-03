@@ -6553,6 +6553,11 @@ Download-Größe: %3</translation>
         <translation>Game Boy Printer...</translation>
     </message>
     <message>
+        <location filename="../Window.cpp" line="1512"/>
+        <source>Mobile Game Boy Adapter...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../Window.cpp" line="1637"/>
         <source>Video layers</source>
         <translation>Video-Ebenen</translation>

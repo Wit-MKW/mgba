@@ -6559,6 +6559,11 @@ Tamanho da descarga: %3</translation>
         <translation>Impressora do Game Boy...</translation>
     </message>
     <message>
+        <location filename="../Window.cpp" line="1512"/>
+        <source>Mobile Game Boy Adapter...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../Window.cpp" line="1507"/>
         <source>BattleChip Gate...</source>
         <translation>Portal do BattleChip...</translation>

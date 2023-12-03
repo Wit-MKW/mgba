@@ -6506,6 +6506,11 @@ Download size: %3</source>
         <translation>Game Boy yazıcısı...</translation>
     </message>
     <message>
+        <location filename="../Window.cpp" line="1512"/>
+        <source>Mobile Game Boy Adapter...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../Window.cpp" line="1507"/>
         <source>BattleChip Gate...</source>
         <translation></translation>

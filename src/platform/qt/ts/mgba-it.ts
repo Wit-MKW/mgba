@@ -6623,6 +6623,11 @@ Dimensione del download: %3</translation>
         <translation>Stampante Game Boy...</translation>
     </message>
     <message>
+        <location filename="../Window.cpp" line="1512"/>
+        <source>Mobile Game Boy Adapter...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../Window.cpp" line="379"/>
         <source>Save games (%1)</source>
         <translation>Salvataggi (%1)</translation>
