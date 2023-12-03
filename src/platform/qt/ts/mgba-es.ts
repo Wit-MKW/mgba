@@ -6796,7 +6796,12 @@ Si está configurado como OpenGL y estás viendo esto, tu tarjeta gráfica o con
         <translation>Game Boy Printer...</translation>
     </message>
     <message>
-        <location filename="../Window.cpp" line="1550"/>
+        <location filename="../Window.cpp" line="1512"/>
+        <source>Mobile Game Boy Adapter...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../Window.cpp" line="1507"/>
         <source>BattleChip Gate...</source>
         <translation>BattleChip Gate...</translation>
     </message>

@@ -6813,7 +6813,12 @@ If it is set to OpenGL and you still see this, your graphics card or drivers may
         <translation>Stampante Game Boy...</translation>
     </message>
     <message>
-        <location filename="../Window.cpp" line="403"/>
+        <location filename="../Window.cpp" line="1512"/>
+        <source>Mobile Game Boy Adapter...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../Window.cpp" line="379"/>
         <source>Save games (%1)</source>
         <translation>Salvataggi (%1)</translation>
     </message>

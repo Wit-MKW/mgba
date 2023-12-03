@@ -6828,7 +6828,12 @@ OpenGL로 설정했는데도 이 문제가 계속 발생하면, 그래픽 카드
         <translation>게임 보이 프린터...</translation>
     </message>
     <message>
-        <location filename="../Window.cpp" line="403"/>
+        <location filename="../Window.cpp" line="1512"/>
+        <source>Mobile Game Boy Adapter...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../Window.cpp" line="379"/>
         <source>Save games (%1)</source>
         <translation>게임 (%1) 저장</translation>
     </message>
