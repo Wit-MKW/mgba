@@ -71,9 +71,6 @@
         <property name="text">
          <string>Adapter type:</string>
         </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-        </property>
        </widget>
       </item>
       <item row="0" column="1">
