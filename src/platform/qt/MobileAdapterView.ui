@@ -6,174 +6,200 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>330</width>
-    <height>330</height>
+    <width>415</width>
+    <height>397</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Mobile Game Boy Adapter</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="0">
+  <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QFormLayout" name="formLayout_2">
-     <item row="0" column="0">
-      <widget class="QLabel" name="label_setType">
-       <property name="text">
-        <string>Adapter type:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QComboBox" name="setType">
-       <item>
+    <widget class="QWidget" name="widget" native="true">
+     <layout class="QFormLayout" name="formLayout_2">
+      <property name="fieldGrowthPolicy">
+       <enum>QFormLayout::ExpandingFieldsGrow</enum>
+      </property>
+      <property name="labelAlignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_userNumber">
         <property name="text">
-         <string>Blue (PDC)</string>
+         <string>Your number is</string>
         </property>
-       </item>
-       <item>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="userNumber">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_peerNumber">
         <property name="text">
-         <string>Yellow (cdmaOne)</string>
+         <string>Currently calling</string>
         </property>
-       </item>
-       <item>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="peerNumber">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="settings">
+     <property name="title">
+      <string>Settings</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout">
+      <property name="fieldGrowthPolicy">
+       <enum>QFormLayout::ExpandingFieldsGrow</enum>
+      </property>
+      <property name="labelAlignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_setType">
         <property name="text">
-         <string>Green (PHS-NTT, unreleased)</string>
+         <string>Adapter type:</string>
         </property>
-       </item>
-       <item>
+        <property name="alignment">
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="setType">
+        <item>
+         <property name="text">
+          <string>Blue (PDC)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Yellow (cdmaOne)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Green (PHS-NTT, unreleased)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Red (DDI)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Purple (unreleased)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Black (unreleased)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Pink (unreleased)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Grey (unreleased)</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QCheckBox" name="setUnmetered">
         <property name="text">
-         <string>Red (DDI)</string>
+         <string>Unmetered</string>
         </property>
-       </item>
-       <item>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_setDns1">
         <property name="text">
-         <string>Purple (unreleased)</string>
+         <string>Primary DNS:</string>
         </property>
-       </item>
-       <item>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="setDns1"/>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_setDns2">
         <property name="text">
-         <string>Black (unreleased)</string>
+         <string>Secondary DNS:</string>
         </property>
-       </item>
-       <item>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QLineEdit" name="setDns2"/>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_setPort">
         <property name="text">
-         <string>Pink (unreleased)</string>
+         <string>P2P port:</string>
         </property>
-       </item>
-       <item>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QSpinBox" name="setPort">
+        <property name="maximum">
+         <number>65535</number>
+        </property>
+        <property name="value">
+         <number>1027</number>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QLabel" name="label_setRelay">
         <property name="text">
-         <string>Grey (unreleased)</string>
+         <string>Relay server:</string>
         </property>
-       </item>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QCheckBox" name="setUnmetered">
-       <property name="text">
-        <string>Unmetered</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label_setDns1">
-       <property name="text">
-        <string>Primary DNS:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QLineEdit" name="setDns1"/>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="label_setDns2">
-       <property name="text">
-        <string>Secondary DNS:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="1">
-      <widget class="QLineEdit" name="setDns2"/>
-     </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="label_setPort">
-       <property name="text">
-        <string>P2P port:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="1">
-      <widget class="QSpinBox" name="setPort">
-       <property name="maximum">
-        <number>65535</number>
-       </property>
-       <property name="value">
-        <number>1027</number>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="0">
-      <widget class="QLabel" name="label_setRelay">
-       <property name="text">
-        <string>Relay server:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="1">
-      <widget class="QLineEdit" name="setRelay"/>
-     </item>
-     <item row="6" column="0">
-      <widget class="QLabel" name="label_setToken">
-       <property name="text">
-        <string>Relay token:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="1">
-      <widget class="QLineEdit" name="setToken">
-       <property name="maxLength">
-        <number>32</number>
-       </property>
-       <property name="echoMode">
-        <enum>QLineEdit::Password</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="1">
-      <widget class="QPushButton" name="copyToken">
-       <property name="text">
-        <string>Copy relay token</string>
-       </property>
-      </widget>
-     </item>
-     <item row="8" column="0">
-      <widget class="QLabel" name="label_userNumber">
-       <property name="text">
-        <string>Your number is</string>
-       </property>
-      </widget>
-     </item>
-     <item row="9" column="0">
-      <widget class="QLabel" name="label_peerNumber">
-       <property name="text">
-        <string>Currently calling</string>
-       </property>
-      </widget>
-     </item>
-     <item row="8" column="1">
-      <widget class="QLineEdit" name="userNumber">
-       <property name="readOnly">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="9" column="1">
-      <widget class="QLineEdit" name="peerNumber">
-       <property name="readOnly">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-    </layout>
+       </widget>
+      </item>
+      <item row="5" column="1">
+       <widget class="QLineEdit" name="setRelay"/>
+      </item>
+      <item row="6" column="0">
+       <widget class="QLabel" name="label_setToken">
+        <property name="text">
+         <string>Relay token:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1">
+       <widget class="QLineEdit" name="setToken">
+        <property name="maxLength">
+         <number>32</number>
+        </property>
+        <property name="echoMode">
+         <enum>QLineEdit::Password</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="1">
+       <widget class="QPushButton" name="copyToken">
+        <property name="text">
+         <string>Copy relay token</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
    </item>
   </layout>
  </widget>
