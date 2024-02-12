@@ -15,40 +15,75 @@
       <attribute name="title">
        <string>Status</string>
       </attribute>
-      <layout class="QFormLayout" name="formLayout">
-       <property name="fieldGrowthPolicy">
-        <enum>QFormLayout::ExpandingFieldsGrow</enum>
-       </property>
-       <property name="labelAlignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-       <item row="0" column="0">
-        <widget class="QLabel" name="label_userNumber">
-         <property name="text">
-          <string>Your number is</string>
-         </property>
+      <layout class="QVBoxLayout" name="verticalLayout_statusTab">
+       <item>
+        <widget class="QGroupBox" name="statusBox">
+         <layout class="QVBoxLayout" name="verticalLayout_statusBox">
+          <item>
+           <widget class="QLabel" name="statusText">
+            <property name="text">
+             <string>{status}</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
-       <item row="0" column="1">
-        <widget class="QLineEdit" name="userNumber">
-         <property name="readOnly">
-          <bool>true</bool>
-         </property>
+       <item>
+        <widget class="QWidget" name="numbersForm" native="true">
+         <layout class="QFormLayout" name="formLayout_numbersForm">
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::ExpandingFieldsGrow</enum>
+          </property>
+          <property name="labelAlignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_userNumber">
+            <property name="text">
+             <string>Your number is</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="userNumber">
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_peerNumber">
+            <property name="text">
+             <string>Currently calling</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="peerNumber">
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label_peerNumber">
-         <property name="text">
-          <string>Currently calling</string>
+       <item>
+        <spacer name="verticalSpacer_statusTab">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
          </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QLineEdit" name="peerNumber">
-         <property name="readOnly">
-          <bool>true</bool>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
          </property>
-        </widget>
+        </spacer>
        </item>
       </layout>
      </widget>
@@ -56,7 +91,7 @@
       <attribute name="title">
        <string>Settings</string>
       </attribute>
-      <layout class="QFormLayout" name="formLayout_2">
+      <layout class="QFormLayout" name="formLayout_settingsTab">
        <property name="fieldGrowthPolicy">
         <enum>QFormLayout::ExpandingFieldsGrow</enum>
        </property>
