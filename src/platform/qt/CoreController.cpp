@@ -1225,9 +1225,11 @@ void CoreController::getMobileAdapterConfig(int* type, bool* unmetered, QString*
 	}
 }
 
-void CoreController::updateMobileAdapter(QString* userNumber, QString* peerNumber, QString* token) {
+void CoreController::updateMobileAdapter(QString* statusText, QString* userNumber, QString* peerNumber, QString* token) {
 	Interrupter interrupter(this);
 	struct mobile_adapter* adapter = getMobileAdapter()->adapter;
+
+	*statusText = QString("Current status");
 
 	char (* number)[MOBILE_MAX_NUMBER_SIZE + 1] = getMobileAdapter()->number;
 	*userNumber = QString(number[0]);

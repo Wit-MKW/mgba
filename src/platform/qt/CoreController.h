@@ -210,7 +210,7 @@ public slots:
 	void attachMobileAdapter();
 	void detachMobileAdapter();
 	void getMobileAdapterConfig(int* type, bool* unmetered, QString* dns1, QString* dns2, int* p2p_port, QString* relay);
-	void updateMobileAdapter(QString* userNumber, QString* peerNumber, QString* token);
+	void updateMobileAdapter(QString* statusText, QString* userNumber, QString* peerNumber, QString* token);
 	void setMobileAdapterType(int type);
 	void setMobileAdapterUnmetered(bool unmetered);
 	void setMobileAdapterDns1(const Address& host, int port);

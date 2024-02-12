@@ -178,9 +178,9 @@ void MobileAdapterView::getConfig() {
 }
 
 void MobileAdapterView::advanceFrameCounter() {
-	// TODO: get this out of the UI thread?
-	QString userNumber, peerNumber, token;
-	m_controller->updateMobileAdapter(&userNumber, &peerNumber, &token);
+	QString statusText, userNumber, peerNumber, token;
+	m_controller->updateMobileAdapter(&statusText, &userNumber, &peerNumber, &token);
+	m_ui.statusText->setText(statusText);
 	m_ui.userNumber->setText(userNumber);
 	m_ui.peerNumber->setText(peerNumber);
 	if (!m_tokenFilled && m_ui.setToken->text() == "") {
