@@ -82,6 +82,12 @@ MobileAdapterView::MobileAdapterView(std::shared_ptr<CoreController> controller,
 	connect(m_controller.get(), &CoreController::frameAvailable, this, &MobileAdapterView::advanceFrameCounter);
 	connect(controller.get(), &CoreController::stopping, this, &QWidget::close);
 
+	QString versionText = QString("%1.%2.%3").arg(
+		QString::number(mobile_version_major),
+		QString::number(mobile_version_minor),
+		QString::number(mobile_version_patch));
+	m_ui.versionText->setText(versionText);
+
 	m_controller->attachMobileAdapter();
 	getConfig();
 }
