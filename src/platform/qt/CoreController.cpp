@@ -1126,7 +1126,7 @@ void CoreController::detachMobileAdapter() {
 	}
 }
 
-void CoreController::getMobileAdapterConfig(int* type, bool* unmetered, QString* dns1, QString* dns2, int* p2p_port, QString* relay) {
+void CoreController::getMobileAdapterConfig(int* type, bool* unmetered, QString* dns1, QString* dns2, int* p2p_port, QString* relay, QString* token) {
 	Interrupter interrupter(this);
 	struct mobile_adapter* adapter = getMobileAdapter()->adapter;
 	if (!adapter) return;
@@ -1205,9 +1205,19 @@ void CoreController::getMobileAdapterConfig(int* type, bool* unmetered, QString*
 			*relay += QString(':') + tmp;
 		}
 	}
+
+	token->clear();
+	unsigned char token_get[MOBILE_RELAY_TOKEN_SIZE];
+	if (mobile_config_get_relay_token(adapter, token_get)) {
+		for (int i = 0; i < MOBILE_RELAY_TOKEN_SIZE; ++i) {
+			QString tmp;
+			tmp.setNum(token_get[i], 0x10);
+			*token += tmp;
+		}
+	}
 }
 
-bool CoreController::updateMobileAdapter(QString* statusText, QString* userNumber, QString* peerNumber, QString* token) {
+bool CoreController::updateMobileAdapter(QString* statusText, QString* userNumber, QString* peerNumber) {
 	Interrupter interrupter(this);
 	struct mobile_adapter* adapter = getMobileAdapter()->adapter;
 	if (!adapter) return false;
@@ -1217,17 +1227,6 @@ bool CoreController::updateMobileAdapter(QString* statusText, QString* userNumbe
 	char (* number)[MOBILE_MAX_NUMBER_SIZE + 1] = getMobileAdapter()->number;
 	*userNumber = QString(number[0]);
 	*peerNumber = QString(number[1]);
-
-	token->clear();
-	unsigned char token_get[MOBILE_RELAY_TOKEN_SIZE];
-	if (!mobile_config_get_relay_token(adapter, token_get)) {
-		return true;
-	}
-	for (int i = 0; i < MOBILE_RELAY_TOKEN_SIZE; ++i) {
-		QString tmp;
-		tmp.setNum(token_get[i], 0x10);
-		*token += tmp;
-	}
 	return true;
 }
 
@@ -1338,14 +1337,14 @@ void CoreController::clearMobileAdapterRelay() {
 	mobile_config_set_relay(adapter, &addr);
 }
 
-bool CoreController::setMobileAdapterToken(const QString& qToken) {
+void CoreController::setMobileAdapterToken(const QString& qToken) {
 	Interrupter interrupter(this);
 	struct mobile_adapter* adapter = getMobileAdapter()->adapter;
-	if (!adapter) return false;
+	if (!adapter) return;
 
 	if (qToken.size() != MOBILE_RELAY_TOKEN_SIZE * 2) {
 		mobile_config_set_relay_token(adapter, nullptr);
-		return false;
+		return;
 	}
 	unsigned char token[MOBILE_RELAY_TOKEN_SIZE];
 	for (int i = 0; i < MOBILE_RELAY_TOKEN_SIZE * 2; i += 2) {
@@ -1353,11 +1352,10 @@ bool CoreController::setMobileAdapterToken(const QString& qToken) {
 		token[i / 2] = qToken.mid(i, 2).toInt(&ok, 0x10);
 		if (!ok) {
 			mobile_config_set_relay_token(adapter, nullptr);
-			return false;
+			return;
 		}
 	}
 	mobile_config_set_relay_token(adapter, token);
-	return true;
 }
 #endif
 

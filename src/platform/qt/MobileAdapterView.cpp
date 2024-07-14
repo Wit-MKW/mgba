@@ -60,7 +60,6 @@ static int mobileConvertAddr(const QString& addr, Address *output, unsigned *por
 
 MobileAdapterView::MobileAdapterView(std::shared_ptr<CoreController> controller, Window* window, QWidget* parent)
 	: QDialog(parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint)
-	, m_tokenFilled(false)
 	, m_controller(controller)
 	, m_window(window)
 {
@@ -151,14 +150,8 @@ void MobileAdapterView::setRelay() {
 }
 
 void MobileAdapterView::setToken() {
-	QString token = m_ui.setToken->text();
-	if (m_controller->setMobileAdapterToken(token)) {
-		m_ui.setToken->setText(token);
-		m_tokenFilled = true;
-	} else {
-		m_ui.setToken->setText("");
-		m_tokenFilled = false;
-	}
+	m_controller->setMobileAdapterToken(m_ui.setToken->text());
+	getConfig();
 }
 
 void MobileAdapterView::copyToken(bool checked) {
@@ -172,30 +165,26 @@ void MobileAdapterView::getConfig() {
 	bool unmetered;
 	QString dns1, dns2;
 	int port;
-	QString relay;
-	m_controller->getMobileAdapterConfig(&type, &unmetered, &dns1, &dns2, &port, &relay);
+	QString relay, token;
+	m_controller->getMobileAdapterConfig(&type, &unmetered, &dns1, &dns2, &port, &relay, &token);
 	m_ui.setType->setCurrentIndex(type);
 	m_ui.setUnmetered->setChecked(unmetered);
 	m_ui.setDns1->setText(dns1);
 	m_ui.setDns2->setText(dns2);
 	m_ui.setPort->setValue(port);
 	m_ui.setRelay->setText(relay);
-	advanceFrameCounter();
+	m_ui.setToken->setText(token);
 }
 
 void MobileAdapterView::advanceFrameCounter() {
-	QString statusText, userNumber, peerNumber, token;
-	if (!m_controller->updateMobileAdapter(&statusText, &userNumber, &peerNumber, &token)) {
+	QString statusText, userNumber, peerNumber;
+	if (!m_controller->updateMobileAdapter(&statusText, &userNumber, &peerNumber)) {
 		delete this;
 		return;
 	}
 	m_ui.statusText->setText(statusText);
 	m_ui.userNumber->setText(userNumber);
 	m_ui.peerNumber->setText(peerNumber);
-	if (!m_tokenFilled && m_ui.setToken->text() == "") {
-		m_ui.setToken->setText(token);
-		m_tokenFilled = token != "";
-	}
 }
 
 #endif
