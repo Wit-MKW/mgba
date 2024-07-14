@@ -209,8 +209,8 @@ public slots:
 #ifdef USE_LIBMOBILE
 	void attachMobileAdapter();
 	void detachMobileAdapter();
-	void getMobileAdapterConfig(int* type, bool* unmetered, QString* dns1, QString* dns2, int* p2p_port, QString* relay);
-	bool updateMobileAdapter(QString* statusText, QString* userNumber, QString* peerNumber, QString* token);
+	void getMobileAdapterConfig(int* type, bool* unmetered, QString* dns1, QString* dns2, int* p2p_port, QString* relay, QString* token);
+	bool updateMobileAdapter(QString* statusText, QString* userNumber, QString* peerNumber);
 	void setMobileAdapterType(int type);
 	void setMobileAdapterUnmetered(bool unmetered);
 	void setMobileAdapterDns1(const Address& host, int port);
@@ -220,7 +220,7 @@ public slots:
 	void setMobileAdapterPort(int port);
 	void setMobileAdapterRelay(const Address& host, int port);
 	void clearMobileAdapterRelay();
-	bool setMobileAdapterToken(const QString& qToken);
+	void setMobileAdapterToken(const QString& qToken);
 	struct MobileAdapterGB* getMobileAdapter() { return platform() == mPLATFORM_GBA ? &m_mobile.m : &m_gbmobile.m; }
 #endif
 
