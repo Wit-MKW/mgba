@@ -1148,6 +1148,7 @@ void CoreController::detachMobileAdapter() {
 void CoreController::getMobileAdapterConfig(int* type, bool* unmetered, QString* dns1, QString* dns2, int* p2p_port, QString* relay) {
 	Interrupter interrupter(this);
 	struct mobile_adapter* adapter = getMobileAdapter()->adapter;
+	if (!adapter) return;
 
 	enum mobile_adapter_device device;
 	mobile_config_get_device(adapter, &device, unmetered);
@@ -1225,9 +1226,10 @@ void CoreController::getMobileAdapterConfig(int* type, bool* unmetered, QString*
 	}
 }
 
-void CoreController::updateMobileAdapter(QString* statusText, QString* userNumber, QString* peerNumber, QString* token) {
+bool CoreController::updateMobileAdapter(QString* statusText, QString* userNumber, QString* peerNumber, QString* token) {
 	Interrupter interrupter(this);
 	struct mobile_adapter* adapter = getMobileAdapter()->adapter;
+	if (!adapter) return false;
 
 	*statusText = QString("Current status");
 
@@ -1238,18 +1240,20 @@ void CoreController::updateMobileAdapter(QString* statusText, QString* userNumbe
 	token->clear();
 	unsigned char token_get[MOBILE_RELAY_TOKEN_SIZE];
 	if (!mobile_config_get_relay_token(adapter, token_get)) {
-		return;
+		return true;
 	}
 	for (int i = 0; i < MOBILE_RELAY_TOKEN_SIZE; ++i) {
 		QString tmp;
 		tmp.setNum(token_get[i], 0x10);
 		*token += tmp;
 	}
+	return true;
 }
 
 void CoreController::setMobileAdapterType(int type) {
 	Interrupter interrupter(this);
 	struct mobile_adapter* adapter = getMobileAdapter()->adapter;
+	if (!adapter) return;
 
 	enum mobile_adapter_device tmp;
 	bool unmetered;
@@ -1260,6 +1264,7 @@ void CoreController::setMobileAdapterType(int type) {
 void CoreController::setMobileAdapterUnmetered(bool unmetered) {
 	Interrupter interrupter(this);
 	struct mobile_adapter* adapter = getMobileAdapter()->adapter;
+	if (!adapter) return;
 
 	enum mobile_adapter_device device;
 	bool tmp;
@@ -1287,6 +1292,7 @@ static struct mobile_addr convertMobileAddr(const Address& host, int port)
 void CoreController::setMobileAdapterDns1(const Address& host, int port) {
 	Interrupter interrupter(this);
 	struct mobile_adapter* adapter = getMobileAdapter()->adapter;
+	if (!adapter) return;
 
 	struct mobile_addr addr = convertMobileAddr(host, port);
 	mobile_config_set_dns(adapter, &addr, MOBILE_DNS1);
@@ -1295,6 +1301,7 @@ void CoreController::setMobileAdapterDns1(const Address& host, int port) {
 void CoreController::clearMobileAdapterDns1() {
 	Interrupter interrupter(this);
 	struct mobile_adapter* adapter = getMobileAdapter()->adapter;
+	if (!adapter) return;
 
 	struct mobile_addr addr = {
 		.type = MOBILE_ADDRTYPE_NONE
@@ -1305,6 +1312,7 @@ void CoreController::clearMobileAdapterDns1() {
 void CoreController::setMobileAdapterDns2(const Address& host, int port) {
 	Interrupter interrupter(this);
 	struct mobile_adapter* adapter = getMobileAdapter()->adapter;
+	if (!adapter) return;
 
 	struct mobile_addr addr = convertMobileAddr(host, port);
 	mobile_config_set_dns(adapter, &addr, MOBILE_DNS2);
@@ -1313,6 +1321,7 @@ void CoreController::setMobileAdapterDns2(const Address& host, int port) {
 void CoreController::clearMobileAdapterDns2() {
 	Interrupter interrupter(this);
 	struct mobile_adapter* adapter = getMobileAdapter()->adapter;
+	if (!adapter) return;
 
 	struct mobile_addr addr = {
 		.type = MOBILE_ADDRTYPE_NONE
@@ -1323,6 +1332,7 @@ void CoreController::clearMobileAdapterDns2() {
 void CoreController::setMobileAdapterPort(int port) {
 	Interrupter interrupter(this);
 	struct mobile_adapter* adapter = getMobileAdapter()->adapter;
+	if (!adapter) return;
 
 	mobile_config_set_p2p_port(adapter, (unsigned) port);
 }
@@ -1330,6 +1340,7 @@ void CoreController::setMobileAdapterPort(int port) {
 void CoreController::setMobileAdapterRelay(const Address& host, int port) {
 	Interrupter interrupter(this);
 	struct mobile_adapter* adapter = getMobileAdapter()->adapter;
+	if (!adapter) return;
 
 	struct mobile_addr addr = convertMobileAddr(host, port);
 	mobile_config_set_relay(adapter, &addr);
@@ -1338,6 +1349,7 @@ void CoreController::setMobileAdapterRelay(const Address& host, int port) {
 void CoreController::clearMobileAdapterRelay() {
 	Interrupter interrupter(this);
 	struct mobile_adapter* adapter = getMobileAdapter()->adapter;
+	if (!adapter) return;
 
 	struct mobile_addr addr = {
 		.type = MOBILE_ADDRTYPE_NONE
@@ -1348,6 +1360,7 @@ void CoreController::clearMobileAdapterRelay() {
 bool CoreController::setMobileAdapterToken(const QString& qToken) {
 	Interrupter interrupter(this);
 	struct mobile_adapter* adapter = getMobileAdapter()->adapter;
+	if (!adapter) return false;
 
 	if (qToken.size() != MOBILE_RELAY_TOKEN_SIZE * 2) {
 		mobile_config_set_relay_token(adapter, nullptr);

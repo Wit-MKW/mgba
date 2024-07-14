@@ -185,7 +185,10 @@ void MobileAdapterView::getConfig() {
 
 void MobileAdapterView::advanceFrameCounter() {
 	QString statusText, userNumber, peerNumber, token;
-	m_controller->updateMobileAdapter(&statusText, &userNumber, &peerNumber, &token);
+	if (!m_controller->updateMobileAdapter(&statusText, &userNumber, &peerNumber, &token)) {
+		delete this;
+		return;
+	}
 	m_ui.statusText->setText(statusText);
 	m_ui.userNumber->setText(userNumber);
 	m_ui.peerNumber->setText(peerNumber);
