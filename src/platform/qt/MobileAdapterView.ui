@@ -22,7 +22,7 @@
           <item>
            <widget class="QLabel" name="statusText">
             <property name="text">
-             <string>{status}</string>
+             <string>Current status</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
