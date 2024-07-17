@@ -3951,6 +3951,26 @@ Letöltendő adat: %3</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../MobileAdapterView.ui" line="16"/>
+        <source>Status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MobileAdapterView.ui" line="125"/>
+        <source>Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MobileAdapterView.ui" line="25"/>
+        <source>Current status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MobileAdapterView.ui" line="107"/>
+        <source>libmobile version: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../MobileAdapterView.ui" line="22"/>
         <source>Adapter type:</source>
         <translation type="unfinished"></translation>

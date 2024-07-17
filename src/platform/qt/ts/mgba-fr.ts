@@ -3968,6 +3968,26 @@ Taille du téléchargement&#xa0;:&#xa0;%3</translation>
         <translation>Adaptateur Mobile pour Game Boy</translation>
     </message>
     <message>
+        <location filename="../MobileAdapterView.ui" line="16"/>
+        <source>Status</source>
+        <translation>Statut</translation>
+    </message>
+    <message>
+        <location filename="../MobileAdapterView.ui" line="125"/>
+        <source>Settings</source>
+        <translation>Paramètres</translation>
+    </message>
+    <message>
+        <location filename="../MobileAdapterView.ui" line="25"/>
+        <source>Current status</source>
+        <translation>Statut actuel</translation>
+    </message>
+    <message>
+        <location filename="../MobileAdapterView.ui" line="107"/>
+        <source>libmobile version: </source>
+        <translation>Version libmobile: </translation>
+    </message>
+    <message>
         <location filename="../MobileAdapterView.ui" line="22"/>
         <source>Adapter type:</source>
         <translation>Type d&apos;adaptateur:</translation>

@@ -1241,7 +1241,7 @@ bool CoreController::updateMobileAdapter(QString* statusText, QString* userNumbe
 	struct mobile_adapter* adapter = getMobileAdapter()->adapter;
 	if (!adapter) return false;
 
-	*statusText = QString("Current status");
+	*statusText = QCoreApplication::translate("QGBA::MobileAdapterView", "Current status");
 
 	char (* number)[MOBILE_MAX_NUMBER_SIZE + 1] = getMobileAdapter()->number;
 	*userNumber = QString(number[0]);
