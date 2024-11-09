@@ -966,9 +966,12 @@ void GBAFrameEnded(struct GBA* gba) {
 	if (gba->memory.hw.devices & (HW_GB_PLAYER | HW_GB_PLAYER_DETECTION)) {
 		GBASIOPlayerUpdate(gba);
 	}
+
+#ifdef USE_LIBMOBILE
 	if (gba->sio.magb) {
 		GBASIOMobileAdapterUpdate(gba->sio.magb);
 	}
+#endif
 
 	size_t c;
 	for (c = 0; c < mCoreCallbacksListSize(&gba->coreCallbacks); ++c) {
