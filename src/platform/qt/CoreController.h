@@ -93,7 +93,7 @@ public:
 	QString baseDirectory() const { return m_baseDirectory; }
 	QString savePath() const { return m_savePath; }
 
-	const color_t* drawContext();
+	const mColor* drawContext();
 	QImage getPixels();
 
 	bool isPaused();
@@ -113,7 +113,7 @@ public:
 
 	mCheatDevice* cheatDevice() { return m_threadContext.core->cheatDevice(m_threadContext.core); }
 
-#ifdef USE_DEBUGGERS
+#ifdef ENABLE_DEBUGGERS
 	mDebugger* debugger() { return &m_debugger; }
 	void attachDebugger(bool interrupt = true);
 	void detachDebugger();
@@ -329,7 +329,7 @@ private:
 	bool m_autoload;
 	int m_autosaveCounter = 0;
 
-#ifdef USE_DEBUGGERS
+#ifdef ENABLE_DEBUGGERS
 	struct mDebugger m_debugger;
 #endif
 
