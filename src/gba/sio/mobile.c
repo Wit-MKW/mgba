@@ -28,6 +28,8 @@ static bool time_check_ms(void* user, unsigned timer, unsigned ms) {
 
 static bool GBASIOMobileAdapterInit(struct GBASIODriver* driver);
 static void GBASIOMobileAdapterDeinit(struct GBASIODriver* driver);
+static bool GBASIOMobileAdapterHandlesMode(struct GBASIODriver* driver, enum GBASIOMode mode);
+static int GBASIOMobileAdapterConnectedDevices(struct GBASIODriver* driver);
 static uint16_t GBASIOMobileAdapterWriteSIOCNT(struct GBASIODriver* driver, uint16_t value);
 
 static void _mobileTransfer(struct GBASIOMobileAdapter* mobile, bool fastClock);
@@ -37,6 +39,8 @@ void GBASIOMobileAdapterCreate(struct GBASIOMobileAdapter* mobile) {
 	memset(&mobile->d, 0, sizeof(mobile->d));
 	mobile->d.init = GBASIOMobileAdapterInit;
 	mobile->d.deinit = GBASIOMobileAdapterDeinit;
+	mobile->d.handlesMode = GBASIOMobileAdapterHandlesMode;
+	mobile->d.connectedDevices = GBASIOMobileAdapterConnectedDevices;
 	mobile->d.writeSIOCNT = GBASIOMobileAdapterWriteSIOCNT;
 
 	mobile->event.context = mobile;
@@ -52,7 +56,7 @@ void GBASIOMobileAdapterUpdate(struct GBASIOMobileAdapter* mobile) {
 	mobile_loop(mobile->m.adapter);
 }
 
-bool GBASIOMobileAdapterInit(struct GBASIODriver* driver) {
+static bool GBASIOMobileAdapterInit(struct GBASIODriver* driver) {
 	struct GBASIOMobileAdapter* mobile = (struct GBASIOMobileAdapter*) driver;
 	mobile->m.adapter = MobileAdapterGBNew(&mobile->m);
 	if (!mobile->m.adapter) return false;
@@ -65,7 +69,7 @@ bool GBASIOMobileAdapterInit(struct GBASIODriver* driver) {
 	return true;
 }
 
-void GBASIOMobileAdapterDeinit(struct GBASIODriver* driver) {
+static void GBASIOMobileAdapterDeinit(struct GBASIODriver* driver) {
 	struct GBASIOMobileAdapter* mobile = (struct GBASIOMobileAdapter*) driver;
 	if (!mobile->m.adapter) return;
 
@@ -74,7 +78,23 @@ void GBASIOMobileAdapterDeinit(struct GBASIODriver* driver) {
 	mobile->m.adapter = NULL;
 }
 
-uint16_t GBASIOMobileAdapterWriteSIOCNT(struct GBASIODriver* driver, uint16_t value) {
+static bool GBASIOMobileAdapterHandlesMode(struct GBASIODriver* driver, enum GBASIOMode mode) {
+	UNUSED(driver);
+	switch (mode) {
+	case GBA_SIO_NORMAL_8:
+	case GBA_SIO_NORMAL_32:
+		return true;
+	default:
+		return false;
+	}
+}
+
+static int GBASIOMobileAdapterConnectedDevices(struct GBASIODriver* driver) {
+	UNUSED(driver);
+	return 1;
+}
+
+static uint16_t GBASIOMobileAdapterWriteSIOCNT(struct GBASIODriver* driver, uint16_t value) {
 	struct GBASIOMobileAdapter* mobile = (struct GBASIOMobileAdapter*) driver;
 	if ((value & 0x81) == 0x81) {
 		_mobileTransfer(mobile, value & 0x2);
@@ -82,7 +102,7 @@ uint16_t GBASIOMobileAdapterWriteSIOCNT(struct GBASIODriver* driver, uint16_t va
 	return value;
 }
 
-void _mobileTransfer(struct GBASIOMobileAdapter* mobile, bool fastClock) {
+static void _mobileTransfer(struct GBASIOMobileAdapter* mobile, bool fastClock) {
 	int32_t cycles = GBA_ARM7TDMI_FREQUENCY / 0x40000; // 2MHz
 	if (!fastClock) cycles *= 8; // 256kHz
 	cycles *= mobile->m.serial; // Bytes per transfer
@@ -91,7 +111,7 @@ void _mobileTransfer(struct GBASIOMobileAdapter* mobile, bool fastClock) {
 	mTimingSchedule(&mobile->d.p->p->timing, &mobile->event, cycles);
 }
 
-void _mobileEvent(struct mTiming* timing, void* user, uint32_t cyclesLate) {
+static void _mobileEvent(struct mTiming* timing, void* user, uint32_t cyclesLate) {
 	UNUSED(timing);
 	struct GBASIOMobileAdapter* mobile = user;
 
