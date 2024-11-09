@@ -1210,9 +1210,11 @@ void GBFrameEnded(struct GB* gb) {
 		gb->stream->postVideoFrame(gb->stream, pixels, stride);
 	}
 
+#ifdef USE_LIBMOBILE
 	if (gb->sio.magb) {
 		GBSIOMobileAdapterUpdate(gb->sio.magb);
 	}
+#endif
 
 	size_t c;
 	for (c = 0; c < mCoreCallbacksListSize(&gb->coreCallbacks); ++c) {
