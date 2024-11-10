@@ -122,9 +122,9 @@ static uint8_t GBASIOMobileAdapterFinishNormal8(struct GBASIODriver* driver) {
 
 	if (mobile->m.serial == 1) {
 		uint8_t reg = mobile->d.p->p->memory.io[GBA_REG(SIODATA8)];
-		uint8_t tmp = mobile->next;
+		uint8_t ret = mobile->next;
 		mobile->next = mobile_transfer(mobile->m.adapter, reg);
-		return tmp;
+		return ret;
 	}
 
 	return 0xFF;
