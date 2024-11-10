@@ -13,7 +13,9 @@ CXX_GUARD_START
 #include <mgba/core/log.h>
 #include <mgba/core/timing.h>
 #include <mgba/gb/interface.h>
+#ifdef USE_LIBMOBILE
 #include <mgba/internal/gb/sio/mobile.h>
+#endif
 
 #define MAX_GBS 2
 

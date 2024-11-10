@@ -13,7 +13,9 @@ CXX_GUARD_START
 #include <mgba/core/log.h>
 #include <mgba/gba/interface.h>
 #include <mgba/internal/gba/sio/gbp.h>
+#ifdef USE_LIBMOBILE
 #include <mgba/internal/gba/sio/mobile.h>
+#endif
 
 #define MAX_GBAS 4
 
