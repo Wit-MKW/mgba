@@ -48,9 +48,8 @@ static void GBASIOMobileAdapterDeinit(struct GBASIODriver* driver);
 static bool GBASIOMobileAdapterHandlesMode(struct GBASIODriver* driver, enum GBASIOMode mode);
 static int GBASIOMobileAdapterConnectedDevices(struct GBASIODriver* driver);
 static uint16_t GBASIOMobileAdapterWriteSIOCNT(struct GBASIODriver* driver, uint16_t value);
-
-static void _mobileTransfer(struct GBASIOMobileAdapter* mobile, bool fastClock);
-static void _mobileEvent(struct mTiming* timing, void* mobile, uint32_t cyclesLate);
+static uint8_t GBASIOMobileAdapterFinishNormal8(struct GBASIODriver* driver);
+static uint32_t GBASIOMobileAdapterFinishNormal32(struct GBASIODriver* driver);
 
 void GBASIOMobileAdapterCreate(struct GBASIOMobileAdapter* mobile) {
 	mobile->d.init = GBASIOMobileAdapterInit;
@@ -60,10 +59,8 @@ void GBASIOMobileAdapterCreate(struct GBASIOMobileAdapter* mobile) {
 	mobile->d.handlesMode = GBASIOMobileAdapterHandlesMode;
 	mobile->d.connectedDevices = GBASIOMobileAdapterConnectedDevices;
 	mobile->d.writeSIOCNT = GBASIOMobileAdapterWriteSIOCNT;
-
-	mobile->event.context = mobile;
-	mobile->event.callback = _mobileEvent;
-	mobile->event.priority = 0x80;
+	mobile->d.finishNormal8 = GBASIOMobileAdapterFinishNormal8;
+	mobile->d.finishNormal32 = GBASIOMobileAdapterFinishNormal32;
 
 	memset(&mobile->m, 0, sizeof(mobile->m));
 	mobile->m.p = mobile;
@@ -113,42 +110,33 @@ static int GBASIOMobileAdapterConnectedDevices(struct GBASIODriver* driver) {
 }
 
 static uint16_t GBASIOMobileAdapterWriteSIOCNT(struct GBASIODriver* driver, uint16_t value) {
+	UNUSED(driver);
+	return value | 4;
+}
+
+static uint8_t GBASIOMobileAdapterFinishNormal8(struct GBASIODriver* driver) {
 	struct GBASIOMobileAdapter* mobile = (struct GBASIOMobileAdapter*) driver;
-	if ((value & 0x81) == 0x81) {
-		_mobileTransfer(mobile, value & 0x2);
+
+	if (mobile->m.serial == 1) {
+		uint8_t reg = mobile->d.p->p->memory.io[GBA_REG(SIODATA8)];
+		uint8_t tmp = mobile->next;
+		mobile->next = mobile_transfer(mobile->m.adapter, reg);
+		return tmp;
 	}
-	return value;
+
+	return 0xFF;
 }
 
-static void _mobileTransfer(struct GBASIOMobileAdapter* mobile, bool fastClock) {
-	int32_t cycles = GBA_ARM7TDMI_FREQUENCY / 0x40000; // 2MHz
-	if (!fastClock) cycles *= 8; // 256kHz
-	if (mobile->d.p->mode == SIO_NORMAL_32) cycles *= 4; // Four bytes
+static uint32_t GBASIOMobileAdapterFinishNormal32(struct GBASIODriver* driver) {
+	struct GBASIOMobileAdapter* mobile = (struct GBASIOMobileAdapter*) driver;
 
-	mTimingDeschedule(&mobile->d.p->p->timing, &mobile->event);
-	mTimingSchedule(&mobile->d.p->p->timing, &mobile->event, cycles);
-}
-
-static void _mobileEvent(struct mTiming* timing, void* user, uint32_t cyclesLate) {
-	UNUSED(timing);
-	struct GBASIOMobileAdapter* mobile = user;
-
-	if (mobile->d.p->mode == SIO_NORMAL_32 && mobile->m.serial == 4) {
-		uint16_t* reg_lo = &mobile->d.p->p->memory.io[GBA_REG_SIODATA32_LO >> 1];
-		uint16_t* reg_hi = &mobile->d.p->p->memory.io[GBA_REG_SIODATA32_HI >> 1];
-		uint32_t tmp = *reg_hi << 16 | *reg_lo;
-		*reg_hi = mobile->next >> 16;
-		*reg_lo = mobile->next;
-		mobile->next = mobile_transfer_32bit(mobile->m.adapter, tmp);
-	} else if (mobile->d.p->mode == SIO_NORMAL_8 && mobile->m.serial == 1) {
-		uint16_t* reg = &mobile->d.p->p->memory.io[GBA_REG_SIODATA8 >> 1];
-		uint8_t tmp = *reg;
-		*reg = mobile->next;
-		mobile->next = mobile_transfer(mobile->m.adapter, tmp);
+	if (mobile->m.serial == 4) {
+		uint16_t reg_lo = mobile->d.p->p->memory.io[GBA_REG(SIODATA32_LO)];
+		uint16_t reg_hi = mobile->d.p->p->memory.io[GBA_REG(SIODATA32_HI)];
+		uint32_t ret = mobile->next;
+		mobile->next = mobile_transfer_32bit(mobile->m.adapter, reg_hi << 16 | reg_lo);
+		return ret;
 	}
 
-	mobile->d.p->siocnt = GBASIONormalClearStart(mobile->d.p->siocnt);
-	if (GBASIONormalIsIrq(mobile->d.p->siocnt)) {
-		GBARaiseIRQ(mobile->d.p->p, GBA_IRQ_SIO, cyclesLate);
-	}
+	return 0xFFFFFFFF;
 }
