@@ -23,7 +23,6 @@ set(SOURCE_FILES
 	image/export.c
 	image/png-io.c
 	interpolator.c
-	mobile.c
 	patch.c
 	patch-fast.c
 	patch-ips.c
@@ -55,6 +54,10 @@ set(TEST_FILES
 if(NOT DEFINED OS_SRC)
 	set(OS_FILES memory.c)
 	export_directory(OS OS_FILES)
+endif()
+
+if(USE_LIBMOBILE)
+	list(APPEND SOURCE_FILES mobile.c)
 endif()
 
 source_group("Utilities" FILES ${SOURCE_FILES})
