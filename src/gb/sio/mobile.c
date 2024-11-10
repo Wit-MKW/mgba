@@ -56,12 +56,15 @@ bool GBSIOMobileAdapterInit(struct GBSIODriver* driver) {
 	mobile_def_time_check_ms(mobile->m.adapter, time_check_ms);
 
 	mobile_start(mobile->m.adapter);
+
+	mobile->d.p->magb = mobile;
 	return true;
 }
 
 void GBSIOMobileAdapterDeinit(struct GBSIODriver* driver) {
 	struct GBSIOMobileAdapter* mobile = (struct GBSIOMobileAdapter*) driver;
 	if (!mobile->m.adapter) return;
+	mobile->d.p->magb = NULL;
 
 	mobile_stop(mobile->m.adapter);
 	free(mobile->m.adapter);

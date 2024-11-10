@@ -1123,9 +1123,9 @@ void CoreController::attachMobileAdapter() {
 	}
 
 	if (platform() == mPLATFORM_GBA) {
-		m_threadContext.core->setPeripheral(m_threadContext.core, mPERIPH_GBA_MOBILE_ADAPTER, &m_mobile);
+		m_threadContext.core->setPeripheral(m_threadContext.core, mPERIPH_GBA_LINK_PORT, &m_mobile);
 	} else {
-		m_threadContext.core->setPeripheral(m_threadContext.core, mPERIPH_GB_MOBILE_ADAPTER, &m_gbmobile);
+		m_threadContext.core->setPeripheral(m_threadContext.core, mPERIPH_GB_LINK_PORT, &m_gbmobile);
 	}
 }
 
@@ -1133,9 +1133,9 @@ void CoreController::detachMobileAdapter() {
 	Interrupter interrupter(this);
 
 	if (platform() == mPLATFORM_GBA) {
-		m_threadContext.core->setPeripheral(m_threadContext.core, mPERIPH_GBA_MOBILE_ADAPTER, nullptr);
+		m_threadContext.core->setPeripheral(m_threadContext.core, mPERIPH_GBA_LINK_PORT, nullptr);
 	} else {
-		m_threadContext.core->setPeripheral(m_threadContext.core, mPERIPH_GB_MOBILE_ADAPTER, nullptr);
+		m_threadContext.core->setPeripheral(m_threadContext.core, mPERIPH_GB_LINK_PORT, nullptr);
 	}
 
 	QFile fconfig(ConfigController::configDir() + "/mobile_config.bin");

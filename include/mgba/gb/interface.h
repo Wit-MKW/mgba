@@ -68,7 +68,7 @@ enum GBColorLookup {
 };
 
 enum {
-	mPERIPH_GB_MOBILE_ADAPTER = 0x1000
+	mPERIPH_GB_LINK_PORT = 0x1000
 };
 
 struct GBSIODriver {
