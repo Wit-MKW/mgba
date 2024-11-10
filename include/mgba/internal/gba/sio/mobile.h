@@ -10,7 +10,6 @@ CXX_GUARD_START
 
 struct GBASIOMobileAdapter {
 	struct GBASIODriver d;
-	struct mTimingEvent event;
 	struct MobileAdapterGB m;
 	uint32_t timeLatch[MOBILE_MAX_TIMERS];
 	uint32_t next;
