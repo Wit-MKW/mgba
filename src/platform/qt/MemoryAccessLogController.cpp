@@ -117,6 +117,7 @@ void MemoryAccessLogController::load(bool loadExisting) {
 		LOG(QT, ERROR) << tr("Failed to open memory log file");
 		return;
 	}
+	m_logExtra = logExtra;
 
 	mDebuggerAccessLoggerInit(&m_logger);
 	CoreController::Interrupter interrupter(m_controller);

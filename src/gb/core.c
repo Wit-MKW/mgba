@@ -831,9 +831,6 @@ static void _GBCoreSetPeripheral(struct mCore* core, int type, void* periph) {
 	case mPERIPH_IMAGE_SOURCE:
 		gb->memory.cam = periph;
 		break;
-	case mPERIPH_GB_LINK_PORT:
-		GBSIOSetDriver(&gb->sio, periph);
-		break;
 	default:
 		return;
 	}

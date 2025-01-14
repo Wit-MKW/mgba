@@ -46,6 +46,14 @@ Other fixes:
  - Qt: Fix potential crash when configuring shortcuts
  - Qt: Fix regression where loading BIOS creates a save file (fixes mgba.io/i/3359)
  - Qt: Fix selecting high tiles in tile and map views (fixes mgba.io/i/3461)
+ - FFmpeg: Fix failing to record videos with CRF video (fixes mgba.io/i/3368)
+ - GB Core: Fix cloning savedata when backing file is outdated (fixes mgba.io/i/3388)
+ - GBA: Fix getting game info for multiboot ROMs
+ - GBA Core: Fix booting into BIOS when skip BIOS is enabled
+ - GBA Hardware: Fix loading states unconditionally overwriting GPIO memory
+ - mGUI: Load parent directory if last used directory is missing (fixes mgba.io/i/3379)
+ - Qt: Fix savestate preview sizes with different scales (fixes mgba.io/i/2560)
+ - Qt: Fix potential crash when configuring shortcuts
 Misc:
  - 3DS: Change title ID to avoid conflict with commercial title (fixes mgba.io/i/3023)
  - Core: Handle relative paths for saves, screenshots, etc consistently (fixes mgba.io/i/2826)
@@ -104,6 +112,7 @@ Other fixes:
  - Wii: Fix crash on loading large ZIP files (fixes mgba.io/i/3404)
 Misc:
  - GB: Allow use of CGB-E and AGB-0 BIOS versions (closes mgba.io/i/3427)
+ - Updater: Fix rewriting folders and files on Windows (fixes mgba.io/i/3384)
 
 0.10.4: (2024-12-07)
 Emulation fixes:

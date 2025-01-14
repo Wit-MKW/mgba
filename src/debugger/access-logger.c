@@ -71,6 +71,7 @@ static void _mDebuggerAccessLoggerEntered(struct mDebuggerModule* debugger, enum
 
 	mDebuggerAccessLogFlags flags = 0;
 	mDebuggerAccessLogFlagsEx flagsEx = 0;
+	int i;
 	switch (reason) {
 	case DEBUGGER_ENTER_WATCHPOINT:
 		switch (info->type.wp.accessSource) {

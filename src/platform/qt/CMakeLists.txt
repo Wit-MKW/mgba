@@ -215,8 +215,8 @@ set(GBA_SRC
 	BattleChipUpdater.cpp
 	BattleChipView.cpp
 	DolphinConnector.cpp
-	GBAOverride.cpp
 	MobileAdapterView.cpp)
+	GBAOverride.cpp)
 
 set(GB_SRC
 	GameBoy.cpp
