@@ -370,7 +370,7 @@ void GBAApp::cleanupAfterUpdate() {
 void GBAApp::restartForUpdate() {
 	QFileInfo updaterPath(m_updater.updateInfo().url.path());
 	QDir configDir(ConfigController::configDir());
-	if (updaterPath.completeSuffix() == "exe") {
+	if (updaterPath.suffix() == "exe") {
 		m_invokeOnExit = configDir.filePath(QLatin1String("update.exe"));
 	} else {
 		QFile updater(":/updater");
@@ -395,6 +395,26 @@ void GBAApp::finishJob(qint64 jobId) {
 	m_workerJobs.remove(jobId);
 	emit jobFinished(jobId);
 	m_workerJobCallbacks.remove(jobId);
+}
+
+void GBAApp::initMultiplayer() {
+	QStringList fnames = m_configController->fileNames();
+	if (fnames.count() < 2) {
+		return;
+	}
+
+	Window* w = m_windows[0];
+	for (const auto& fname : fnames) {
+		if (!w) {
+			w = newWindow();
+		}
+		if (!w) {
+			break;
+		}
+		CoreController* core = m_manager.loadGame(fname);
+		w->setController(core, fname);
+		w = nullptr;
+	}
 }
 
 GBAApp::WorkerJob::WorkerJob(qint64 id, std::function<void ()>&& job, GBAApp* owner)
