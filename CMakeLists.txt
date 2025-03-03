@@ -242,6 +242,10 @@ endif()
 
 if(APPLE)
 	execute_process(COMMAND xcrun --show-sdk-version OUTPUT_VARIABLE MACOSX_SDK)
+	if(NOT MACOSX_SDK)
+		message(WARNING "Could not detect SDK version; defaulting to system version. Is SDKROOT set?")
+		set(MACOSX_SDK ${CMAKE_SYSTEM_VERSION})
+	endif()
 	add_definitions(-D_DARWIN_C_SOURCE)
 	list(APPEND OS_LIB "-framework Foundation")
 
@@ -872,7 +876,7 @@ if(ENABLE_SCRIPTING)
 endif()
 
 if(ENABLE_VFS)
-	list(APPEND ENABLES VFS)
+	list(APPEND ENABLES VFS DIRECTORIES)
 endif()
 
 foreach(FEATURE IN LISTS FEATURES)
@@ -1016,7 +1020,7 @@ endif()
 
 if(BUILD_LIBRETRO)
 	file(GLOB RETRO_SRC ${CMAKE_CURRENT_SOURCE_DIR}/src/platform/libretro/*.c)
-	add_library(${BINARY_NAME}_libretro SHARED ${CORE_SRC} ${RETRO_SRC} ${VFS_SRC})
+	add_library(${BINARY_NAME}_libretro SHARED ${CORE_SRC} ${RETRO_SRC} ${CORE_VFS_SRC})
 	add_dependencies(${BINARY_NAME}_libretro ${BINARY_NAME}-version-info)
 	set_target_properties(${BINARY_NAME}_libretro PROPERTIES PREFIX "" COMPILE_DEFINITIONS "__LIBRETRO__;COLOR_16_BIT;COLOR_5_6_5;DISABLE_THREADING;MGBA_STANDALONE;${OS_DEFINES};${FUNCTION_DEFINES};ENABLE_VFS;MINIMAL_CORE=2")
 	target_link_libraries(${BINARY_NAME}_libretro ${OS_LIB})
