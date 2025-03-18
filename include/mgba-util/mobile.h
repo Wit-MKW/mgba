@@ -19,6 +19,7 @@ struct MobileAdapterGB {
 	} socket[MOBILE_MAX_CONNECTIONS];
 	int serial;
 	char number[2][MOBILE_MAX_NUMBER_SIZE + 1];
+	bool status_update;
 };
 
 struct mobile_adapter* MobileAdapterGBNew(struct MobileAdapterGB *mobile);

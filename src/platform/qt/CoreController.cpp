@@ -1147,6 +1147,30 @@ void CoreController::detachMobileAdapter() {
 	}
 }
 
+QString mobileAddrToString(const struct mobile_addr* addr, unsigned defaultPort) {
+	QString ret = "";
+	if (addr->type == MOBILE_ADDRTYPE_IPV6) {
+		struct mobile_addr6* addr6 = (struct mobile_addr6*) addr;
+		QHostAddress qaddress(addr6->host);
+		ret = qaddress.toString();
+		if (addr6->port != defaultPort) {
+			QString tmp;
+			tmp.setNum(addr6->port);
+			ret = QString('[') + ret + "]:" + tmp;
+		}
+	} else if (addr->type == MOBILE_ADDRTYPE_IPV4) {
+		struct mobile_addr4* addr4 = (struct mobile_addr4*) addr;
+		QHostAddress qaddress(ntohl(*(unsigned*) addr4->host));
+		ret = qaddress.toString();
+		if (addr4->port != defaultPort) {
+			QString tmp;
+			tmp.setNum(addr4->port);
+			ret += QString(':') + tmp;
+		}
+	}
+	return ret;
+}
+
 void CoreController::getMobileAdapterConfig(int* type, bool* unmetered, QString* dns1, QString* dns2, int* p2p_port, QString* relay, QString* token) {
 	Interrupter interrupter(this);
 	struct mobile_adapter* adapter = getMobileAdapter()->adapter;
@@ -1158,79 +1182,24 @@ void CoreController::getMobileAdapterConfig(int* type, bool* unmetered, QString*
 
 	struct mobile_addr dns1Get;
 	mobile_config_get_dns(adapter, &dns1Get, MOBILE_DNS1);
-	dns1->clear();
-	if (dns1Get.type == MOBILE_ADDRTYPE_IPV6) {
-		struct mobile_addr6* addr6 = (struct mobile_addr6*) &dns1Get;
-		QHostAddress qaddress(addr6->host);
-		*dns1 = qaddress.toString();
-		if (addr6->port != MOBILE_DNS_PORT) {
-			QString tmp;
-			tmp.setNum(addr6->port);
-			*dns1 = QString('[') + *dns1 + "]:" + tmp;
-		}
-	} else if (dns1Get.type == MOBILE_ADDRTYPE_IPV4) {
-		struct mobile_addr4* addr4 = (struct mobile_addr4*) &dns1Get;
-		QHostAddress qaddress(ntohl(*(unsigned*) addr4->host));
-		*dns1 = qaddress.toString();
-		if (addr4->port != MOBILE_DNS_PORT) {
-			QString tmp;
-			tmp.setNum(addr4->port);
-			*dns1 += QString(':') + tmp;
-		}
-	}
+	*dns1 = mobileAddrToString(&dns1Get, MOBILE_DNS_PORT);
 
 	struct mobile_addr dns2Get;
 	mobile_config_get_dns(adapter, &dns2Get, MOBILE_DNS2);
-	dns2->clear();
-	if (dns2Get.type == MOBILE_ADDRTYPE_IPV6) {
-		struct mobile_addr6* addr6 = (struct mobile_addr6*) &dns2Get;
-		QHostAddress qaddress(addr6->host);
-		*dns2 = qaddress.toString();
-		if (addr6->port != MOBILE_DNS_PORT) {
-			QString tmp;
-			tmp.setNum(addr6->port);
-			*dns2 = QString('[') + *dns2 + "]:" + tmp;
-		}
-	} else if (dns2Get.type == MOBILE_ADDRTYPE_IPV4) {
-		struct mobile_addr4* addr4 = (struct mobile_addr4*) &dns2Get;
-		QHostAddress qaddress(ntohl(*(unsigned*) addr4->host));
-		*dns2 = qaddress.toString();
-		if (addr4->port != MOBILE_DNS_PORT) {
-			QString tmp;
-			tmp.setNum(addr4->port);
-			*dns2 += QString(':') + tmp;
-		}
-	}
+	*dns2 = mobileAddrToString(&dns2Get, MOBILE_DNS_PORT);
 
 	mobile_config_get_p2p_port(adapter, (unsigned*) p2p_port);
 
 	struct mobile_addr relayGet;
 	mobile_config_get_relay(adapter, &relayGet);
-	relay->clear();
-	if (relayGet.type == MOBILE_ADDRTYPE_IPV6) {
-		struct mobile_addr6* addr6 = (struct mobile_addr6*) &relayGet;
-		QHostAddress qaddress(addr6->host);
-		*relay = qaddress.toString();
-		if (addr6->port != MOBILE_DEFAULT_RELAY_PORT) {
-			QString tmp;
-			tmp.setNum(addr6->port);
-			*relay = QString('[') + *relay + "]:" + tmp;
-		}
-	} else if (relayGet.type == MOBILE_ADDRTYPE_IPV4) {
-		struct mobile_addr4* addr4 = (struct mobile_addr4*) &relayGet;
-		QHostAddress qaddress(ntohl(*(unsigned*) addr4->host));
-		*relay = qaddress.toString();
-		if (addr4->port != MOBILE_DEFAULT_RELAY_PORT) {
-			QString tmp;
-			tmp.setNum(addr4->port);
-			*relay += QString(':') + tmp;
-		}
-	}
+	*relay = mobileAddrToString(&relayGet, MOBILE_DEFAULT_RELAY_PORT);
 
 	token->clear();
 	unsigned char token_get[MOBILE_RELAY_TOKEN_SIZE];
 	if (mobile_config_get_relay_token(adapter, token_get)) {
 		for (int i = 0; i < MOBILE_RELAY_TOKEN_SIZE; ++i) {
+			if (token_get[i] < 0x10)
+				token += '0';
 			QString tmp;
 			tmp.setNum(token_get[i], 0x10);
 			*token += tmp;
@@ -1239,15 +1208,19 @@ void CoreController::getMobileAdapterConfig(int* type, bool* unmetered, QString*
 }
 
 bool CoreController::updateMobileAdapter(QString* statusText, QString* userNumber, QString* peerNumber) {
+	UNUSED(statusText);
+
 	Interrupter interrupter(this);
 	struct mobile_adapter* adapter = getMobileAdapter()->adapter;
 	if (!adapter) return false;
 
-	*statusText = QCoreApplication::translate("QGBA::MobileAdapterView", "Current status");
+	if (getMobileAdapter()->status_update) {
+		getMobileAdapter()->status_update = false;
+		char (* number)[MOBILE_MAX_NUMBER_SIZE + 1] = getMobileAdapter()->number;
+		*userNumber = QString(number[0]);
+		*peerNumber = QString(number[1]);
+	}
 
-	char (* number)[MOBILE_MAX_NUMBER_SIZE + 1] = getMobileAdapter()->number;
-	*userNumber = QString(number[0]);
-	*peerNumber = QString(number[1]);
 	return true;
 }
 

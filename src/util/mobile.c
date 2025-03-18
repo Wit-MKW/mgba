@@ -183,6 +183,8 @@ static void update_number(void* user, enum mobile_number type, const char* numbe
 	} else {
 		dest[0] = '\0';
 	}
+
+	mobile->status_update = true;
 }
 
 struct mobile_adapter* MobileAdapterGBNew(struct MobileAdapterGB *mobile) {
