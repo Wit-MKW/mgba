@@ -177,7 +177,9 @@ void MobileAdapterView::getConfig() {
 }
 
 void MobileAdapterView::advanceFrameCounter() {
-	QString statusText, userNumber, peerNumber;
+	static QString statusText = tr("Current status");
+	static QString userNumber;
+	static QString peerNumber;
 	if (!m_controller->updateMobileAdapter(&statusText, &userNumber, &peerNumber)) {
 		delete this;
 		return;
