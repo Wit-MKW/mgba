@@ -194,6 +194,7 @@ set(UI_FILES
 	MemoryDump.ui
 	MemorySearch.ui
 	MemoryView.ui
+	MobileAdapterView.ui
 	ObjView.ui
 	OverrideView.ui
 	PaletteView.ui
@@ -214,7 +215,8 @@ set(GBA_SRC
 	BattleChipUpdater.cpp
 	BattleChipView.cpp
 	DolphinConnector.cpp
-	GBAOverride.cpp)
+	GBAOverride.cpp
+	MobileAdapterView.cpp)
 
 set(GB_SRC
 	GameBoy.cpp

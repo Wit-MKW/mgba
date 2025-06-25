@@ -50,6 +50,9 @@
 #include "MemoryAccessLogView.h"
 #include "MemorySearch.h"
 #include "MemoryView.h"
+#ifdef USE_LIBMOBILE
+#include "MobileAdapterView.h"
+#endif
 #include "MultiplayerController.h"
 #include "OverrideView.h"
 #include "ObjView.h"
@@ -1555,6 +1558,10 @@ void Window::setupMenu(QMenuBar* menubar) {
 		m_controller->attachPrinter();
 	}, "emu");
 	m_platformActions.insert(mPLATFORM_GB, gbPrint);
+#endif
+
+#ifdef USE_LIBMOBILE
+	addGameAction(tr("Mobile Game Boy Adapter..."), "mbAdapter", openControllerTView<MobileAdapterView>(this), "emu");
 #endif
 
 #ifdef M_CORE_GBA
