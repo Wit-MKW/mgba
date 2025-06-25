@@ -281,6 +281,7 @@ private:
 	struct CoreLogger : public mLogger {
 		CoreController* self;
 	} m_logger{};
+	bool m_crashSeen = false;
 
 	QString m_path;
 	QString m_baseDirectory;
