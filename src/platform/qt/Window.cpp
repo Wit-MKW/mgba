@@ -50,9 +50,6 @@
 #include "MemoryAccessLogView.h"
 #include "MemorySearch.h"
 #include "MemoryView.h"
-#ifdef USE_LIBMOBILE
-#include "MobileAdapterView.h"
-#endif
 #include "MultiplayerController.h"
 #include "OverrideView.h"
 #include "ObjView.h"
@@ -616,7 +613,7 @@ std::function<void()> Window::openNamedControllerTView(QPointer<T>* name, bool k
 			connect(m_controller.get(), &CoreController::stopping, name->data(), &QWidget::close);
 			connect(this, &Window::shutdown, name->data(), &QWidget::close);
 			if (!keepalive) {
-				(*name)->setAttribute(Qt:WA_DeleteOnClose);
+				(*name)->setAttribute(Qt::WA_DeleteOnClose);
 			}
 		}
 		(*name)->show();
@@ -1549,10 +1546,6 @@ void Window::setupMenu(QMenuBar* menubar) {
 	m_platformActions.insert(mPLATFORM_GB, gbPrint);
 #endif
 
-#ifdef USE_LIBMOBILE
-	addGameAction(tr("Mobile Game Boy Adapter..."), "mbAdapter", openControllerTView<MobileAdapterView>(this), "emu");
-#endif
-
 #ifdef M_CORE_GBA
 	auto bcGate = addGameAction(tr("BattleChip Gate..."), "bcGate", openControllerTView<BattleChipView>(this), "emu");
 	m_platformActions.insert(mPLATFORM_GBA, bcGate);
@@ -1775,9 +1768,7 @@ void Window::setupMenu(QMenuBar* menubar) {
 	addGameAction(tr("View &sprites..."), "spriteWindow", openControllerTView<ObjView>(), "stateViews");
 	addGameAction(tr("View &tiles..."), "tileWindow", openControllerTView<TileView>(), "stateViews");
 	addGameAction(tr("View &map..."), "mapWindow", openControllerTView<MapView>(), "stateViews");
-
 	addGameAction(tr("&Frame inspector..."), "frameWindow", openNamedControllerTView<FrameView>(&m_frameView, false), "stateViews");
-
 	addGameAction(tr("View memory..."), "memoryView", openControllerTView<MemoryView>(), "stateViews");
 	addGameAction(tr("Search memory..."), "memorySearch", openControllerTView<MemorySearch>(), "stateViews");
 	addGameAction(tr("View &I/O registers..."), "ioViewer", openControllerTView<IOViewer>(), "stateViews");

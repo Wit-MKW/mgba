@@ -58,10 +58,6 @@ if(NOT DEFINED OS_SRC)
 	export_directory(OS OS_FILES)
 endif()
 
-if(USE_LIBMOBILE)
-	list(APPEND SOURCE_FILES mobile.c)
-endif()
-
 source_group("Utilities" FILES ${SOURCE_FILES})
 source_group("GUI source" FILES ${GUI_FILES})
 source_group("Utilities tests" FILES ${TEST_FILES})
