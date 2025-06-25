@@ -793,7 +793,7 @@ if(WANT_LIBMOBILE AND NOT USE_LIBMOBILE)
 	set_target_properties(libmobile_static PROPERTIES POSITION_INDEPENDENT_CODE ON)
 	set(USE_LIBMOBILE ON)
 endif()
-Add commentMore actions
+
 if(USE_LIBMOBILE)
 	list(APPEND FEATURES LIBMOBILE)
 	include_directories(AFTER ${LIBMOBILE_INCLUDE_DIRS})
