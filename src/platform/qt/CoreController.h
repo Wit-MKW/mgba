@@ -24,9 +24,15 @@
 
 #ifdef M_CORE_GB
 #include <mgba/internal/gb/sio/printer.h>
+#ifdef USE_LIBMOBILE
+#include <mgba/internal/gb/sio/mobile.h>
+#endif
 #endif
 #ifdef M_CORE_GBA
 #include <mgba/internal/gba/sio/dolphin.h>
+#ifdef USE_LIBMOBILE
+#include <mgba/internal/gba/sio/mobile.h>
+#endif
 #endif
 
 #ifdef M_CORE_GBA
@@ -200,6 +206,24 @@ public slots:
 	void endPrint();
 #endif
 
+#ifdef USE_LIBMOBILE
+	void attachMobileAdapter();
+	void detachMobileAdapter();
+	void getMobileAdapterConfig(int* type, bool* unmetered, QString* dns1, QString* dns2, int* p2p_port, QString* relay, QString* token);
+	bool updateMobileAdapter(QString* statusText, QString* userNumber, QString* peerNumber);
+	void setMobileAdapterType(int type);Add commentMore actions
+	void setMobileAdapterUnmetered(bool unmetered);
+	void setMobileAdapterDns1(const Address& host, int port);
+	void clearMobileAdapterDns1();
+	void setMobileAdapterDns2(const Address& host, int port);
+	void clearMobileAdapterDns2();
+	void setMobileAdapterPort(int port);
+	void setMobileAdapterRelay(const Address& host, int port);
+	void clearMobileAdapterRelay();
+	void setMobileAdapterToken(const QString& qToken);
+	struct MobileAdapterGB* getMobileAdapter() { return platform() == mPLATFORM_GBA ? &m_mobile.m : &m_gbmobile.m; }
+#endif
+
 #ifdef M_CORE_GBA
 	void attachBattleChipGate();
 	void detachBattleChipGate();
@@ -343,11 +367,17 @@ private:
 	struct QGBPrinter : public GBPrinter {
 		CoreController* parent;
 	} m_printer;
+#ifdef USE_LIBMOBILE
+	GBASIOMobileAdapter m_gbmobile;
+#endif
 #endif
 
 #ifdef M_CORE_GBA
 	GBASIOBattlechipGate m_battlechip;
 	QByteArray m_eReaderData;
+#ifdef USE_LIBMOBILE
+	GBASIOMobileAdapter m_mobile;
+#endif
 #endif
 };
 
