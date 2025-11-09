@@ -3943,6 +3943,130 @@ Download size: %3</source>
     </message>
 </context>
 <context>
+    <name>QGBA::MobileAdapterView</name>
+    <message>
+        <location filename="../MobileAdapterView.ui" line="6"/>
+        <source>Mobile Game Boy Adapter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MobileAdapterView.ui" line="16"/>
+        <source>Status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MobileAdapterView.ui" line="25"/>
+        <location filename="../MobileAdapterView.cpp" line="180"/>
+        <source>Current status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MobileAdapterView.ui" line="47"/>
+        <source>Your number is</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MobileAdapterView.ui" line="61"/>
+        <source>Currently calling</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MobileAdapterView.ui" line="107"/>
+        <source>libmobile version: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MobileAdapterView.ui" line="114"/>
+        <source>{version}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MobileAdapterView.ui" line="125"/>
+        <source>Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MobileAdapterView.ui" line="137"/>
+        <source>Adapter type:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MobileAdapterView.ui" line="145"/>
+        <source>Blue (PDC)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MobileAdapterView.ui" line="150"/>
+        <source>Yellow (cdmaOne)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MobileAdapterView.ui" line="155"/>
+        <source>Green (PHS-NTT, unreleased)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MobileAdapterView.ui" line="160"/>
+        <source>Red (DDI)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MobileAdapterView.ui" line="165"/>
+        <source>Purple (unreleased)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MobileAdapterView.ui" line="170"/>
+        <source>Black (unreleased)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MobileAdapterView.ui" line="175"/>
+        <source>Pink (unreleased)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MobileAdapterView.ui" line="180"/>
+        <source>Grey (unreleased)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MobileAdapterView.ui" line="188"/>
+        <source>Unmetered</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MobileAdapterView.ui" line="198"/>
+        <source>Primary DNS:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MobileAdapterView.ui" line="208"/>
+        <source>Secondary DNS:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MobileAdapterView.ui" line="225"/>
+        <source>P2P port:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MobileAdapterView.ui" line="235"/>
+        <source>Relay server:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MobileAdapterView.ui" line="252"/>
+        <source>Relay token:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../MobileAdapterView.ui" line="259"/>
+        <source>Copy relay token</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QGBA::MultiplayerController</name>
     <message>
         <location filename="../MultiplayerController.cpp" line="367"/>
