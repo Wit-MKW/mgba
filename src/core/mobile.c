@@ -1,4 +1,4 @@
-#include <mgba-util/mobile.h>
+#include <mgba/core/mobile.h>
 
 static void serial_disable(void* user) {
 	struct MobileAdapterGB* mobile = user;
@@ -189,7 +189,9 @@ static void update_number(void* user, enum mobile_number type, const char* numbe
 
 struct mobile_adapter* MobileAdapterGBNew(struct MobileAdapterGB *mobile) {
 	struct mobile_adapter* adapter = mobile_new(mobile);
-	if (!adapter) return NULL;
+	if (!adapter) {
+		return NULL;
+	}
 
 	mobile_def_serial_disable(adapter, serial_disable);
 	mobile_def_serial_enable(adapter, serial_enable);

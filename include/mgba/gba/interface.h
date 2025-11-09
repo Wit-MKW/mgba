@@ -14,7 +14,7 @@ CXX_GUARD_START
 #include <mgba/core/timing.h>
 
 #ifdef USE_LIBMOBILE
-#include <mgba-util/mobile.h>
+#include <mgba/core/mobile.h>
 #endif
 
 #define GBA_IDLE_LOOP_NONE 0xFFFFFFFF

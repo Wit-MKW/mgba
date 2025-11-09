@@ -27,6 +27,11 @@ if(ENABLE_VFS)
 			library.c)
 endif()
 
+if(USE_LIBMOBILE)
+		list(APPEND SOURCE_FILES
+			mobile.c)
+endif()
+
 if(ENABLE_SCRIPTING)
 	set(SCRIPTING_FILES
 		scripting.c)
