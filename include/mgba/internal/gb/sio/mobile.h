@@ -6,7 +6,7 @@
 CXX_GUARD_START
 
 #include <mgba/gb/interface.h>
-#include <mgba-util/mobile.h>
+#include <mgba/core/mobile.h>
 
 struct GBSIOMobileAdapter {
 	struct GBSIODriver d;
