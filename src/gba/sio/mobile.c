@@ -48,14 +48,18 @@ void GBASIOMobileAdapterCreate(struct GBASIOMobileAdapter* mobile) {
 }
 
 void GBASIOMobileAdapterUpdate(struct GBASIOMobileAdapter* mobile) {
-	if (!mobile->m.adapter) return;
+	if (!mobile->m.adapter) {
+		return;
+	}
 	mobile_loop(mobile->m.adapter);
 }
 
 static bool GBASIOMobileAdapterInit(struct GBASIODriver* driver) {
 	struct GBASIOMobileAdapter* mobile = (struct GBASIOMobileAdapter*) driver;
 	mobile->m.adapter = MobileAdapterGBNew(&mobile->m);
-	if (!mobile->m.adapter) return false;
+	if (!mobile->m.adapter) {
+		return false;
+	}
 
 	mobile_def_debug_log(mobile->m.adapter, debug_log);
 	mobile_def_time_latch(mobile->m.adapter, time_latch);
@@ -69,7 +73,9 @@ static bool GBASIOMobileAdapterInit(struct GBASIODriver* driver) {
 
 static void GBASIOMobileAdapterDeinit(struct GBASIODriver* driver) {
 	struct GBASIOMobileAdapter* mobile = (struct GBASIOMobileAdapter*) driver;
-	if (!mobile->m.adapter) return;
+	if (!mobile->m.adapter) {
+		return;
+	}
 	mobile->d.p->magb = NULL;
 
 	mobile_stop(mobile->m.adapter);
