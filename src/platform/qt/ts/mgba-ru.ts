@@ -6765,6 +6765,7 @@ If it is set to OpenGL and you still see this, your graphics card or drivers may
         <source>Game Boy Printer...</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
         <location filename="../Window.cpp" line="1512"/>
         <source>Mobile Game Boy Adapter...</source>
         <translation type="unfinished"></translation>

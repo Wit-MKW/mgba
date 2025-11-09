@@ -11,23 +11,6 @@ static void debug_log(void* user, const char* line) {
 	mLOG(GBA_MOBILE, DEBUG, "%s", line);
 }
 
-static void serial_disable(void* user) {
-	USER1.serial = 0;
-}
-
-static void serial_enable(void* user, bool mode_32bit) {
-	USER1.serial = mode_32bit ? 4 : 1;
-	USER1.nextData = MOBILE_SERIAL_IDLE_WORD;
-}
-
-static bool config_read(void* user, void* dest, uintptr_t offset, size_t size) {
-	return memcpy(dest, USER1.config + offset, size) == dest;
-}
-
-static bool config_write(void* user, const void* src, uintptr_t offset, size_t size) {
-	return memcpy(USER1.config + offset, src, size) == USER1.config + offset;
-}
-
 static void time_latch(void* user, unsigned timer) {
 	struct GBASIOMobileAdapter* adapter = ((struct MobileAdapterGB*) user)->p;
 
@@ -54,8 +37,6 @@ static uint32_t GBASIOMobileAdapterFinishNormal32(struct GBASIODriver* driver);
 void GBASIOMobileAdapterCreate(struct GBASIOMobileAdapter* mobile) {
 	mobile->d.init = GBASIOMobileAdapterInit;
 	mobile->d.deinit = GBASIOMobileAdapterDeinit;
-	mobile->d.load = NULL;
-	mobile->d.unload = NULL;
 	mobile->d.handlesMode = GBASIOMobileAdapterHandlesMode;
 	mobile->d.connectedDevices = GBASIOMobileAdapterConnectedDevices;
 	mobile->d.writeSIOCNT = GBASIOMobileAdapterWriteSIOCNT;

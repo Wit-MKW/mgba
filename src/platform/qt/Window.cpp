@@ -1069,7 +1069,7 @@ void Window::reloadDisplayDriver() {
 	}
 	m_display = std::unique_ptr<QGBA::Display>(Display::create(this));
 	if (!m_display) {
-		qCritical() << tr("Failed to create an appropriate display device, falling back to software display. "
+		LOG(QT, ERROR) << tr("Failed to create an appropriate display device, falling back to software display. "
 		                     "Games may run slowly, especially with larger windows.");
 		Display::setDriver(Display::Driver::QT);
 		m_display = std::unique_ptr<Display>(Display::create(this));
@@ -1565,7 +1565,7 @@ void Window::setupMenu(QMenuBar* menubar) {
 #endif
 
 #ifdef M_CORE_GBA
-	Action* bcGate = addGameAction(tr("BattleChip Gate..."), "bcGate", openControllerTView<BattleChipView>(this), "emu");
+	auto bcGate = addGameAction(tr("BattleChip Gate..."), "bcGate", openControllerTView<BattleChipView>(this), "emu");
 	m_platformActions.insert(mPLATFORM_GBA, bcGate);
 #endif
 
