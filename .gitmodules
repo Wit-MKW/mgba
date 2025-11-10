@@ -1,3 +1,0 @@
-[submodule "src/third-party/libmobile"]
-	path = src/third-party/libmobile
-	url = https://github.com/REONTeam/libmobile.git
