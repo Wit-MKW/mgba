@@ -35,6 +35,7 @@ static uint8_t GBASIOMobileAdapterFinishNormal8(struct GBASIODriver* driver);
 static uint32_t GBASIOMobileAdapterFinishNormal32(struct GBASIODriver* driver);
 
 void GBASIOMobileAdapterCreate(struct GBASIOMobileAdapter* mobile) {
+	memset(&mobile->d, 0, sizeof(mobile->d));
 	mobile->d.init = GBASIOMobileAdapterInit;
 	mobile->d.deinit = GBASIOMobileAdapterDeinit;
 	mobile->d.handlesMode = GBASIOMobileAdapterHandlesMode;
