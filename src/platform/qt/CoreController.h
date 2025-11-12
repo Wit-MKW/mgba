@@ -209,6 +209,7 @@ public slots:
 #ifdef USE_LIBMOBILE
 	void attachMobileAdapter();
 	void detachMobileAdapter();
+	void importMobileAdapterConfig(const QString& filename);
 	void getMobileAdapterConfig(int* type, bool* unmetered, QString* dns1, QString* dns2, int* p2p_port, QString* relay, QString* token);
 	bool updateMobileAdapter(QString* statusText, QString* userNumber, QString* peerNumber);
 	void setMobileAdapterType(int type);

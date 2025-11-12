@@ -77,6 +77,7 @@ MobileAdapterView::MobileAdapterView(std::shared_ptr<CoreController> controller,
 	connect(m_ui.setRelay, &QLineEdit::editingFinished, this, &MobileAdapterView::setRelay);
 	connect(m_ui.setToken, &QLineEdit::editingFinished, this, &MobileAdapterView::setToken);
 	connect(m_ui.copyToken, &QAbstractButton::clicked, this, &MobileAdapterView::copyToken);
+	connect(m_ui.importConfig, &QAbstractButton::clicked, this, &MobileAdapterView::importConfig);
 
 	connect(m_controller.get(), &CoreController::frameAvailable, this, &MobileAdapterView::advanceFrameCounter);
 	connect(controller.get(), &CoreController::stopping, this, &QWidget::close);
@@ -158,6 +159,17 @@ void MobileAdapterView::copyToken(bool checked) {
 	UNUSED(checked);
 	getConfig();
 	QGuiApplication::clipboard()->setText(m_ui.setToken->text());
+}
+
+void MobileAdapterView::importConfig(bool checked) {
+	UNUSED(checked);
+	QString filename = GBAApp::app()->getOpenFileName(this, tr("Select config file"));
+	if (filename.isEmpty()) {
+		return;
+	}
+
+	m_controller->importMobileAdapterConfig(filename);
+	getConfig();
 }
 
 void MobileAdapterView::getConfig() {

@@ -31,6 +31,7 @@ public slots:
 	void setRelay();
 	void setToken();
 	void copyToken(bool checked);
+	void importConfig(bool checked);
 
 private slots:
 	void getConfig();

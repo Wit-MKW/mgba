@@ -1147,6 +1147,23 @@ void CoreController::detachMobileAdapter() {
 	}
 }
 
+void CoreController::importMobileAdapterConfig(const QString& filename) {
+	Interrupter interrupter(this);
+	struct mobile_adapter* adapter = getMobileAdapter()->adapter;
+	if (!adapter) {
+		return;
+	}
+
+	QFile fconfig(filename);
+	if (fconfig.open(QIODevice::ReadOnly)) {
+		mobile_stop(adapter);
+		fconfig.read((char*) getMobileAdapter()->config, MOBILE_CONFIG_SIZE);
+		fconfig.close();
+		mobile_config_load(adapter);
+		mobile_start(adapter);
+	}
+}
+
 QString mobileAddrToString(const struct mobile_addr* addr, unsigned defaultPort) {
 	QString ret = "";
 	if (addr->type == MOBILE_ADDRTYPE_IPV6) {
