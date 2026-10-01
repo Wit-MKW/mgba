@@ -23,6 +23,7 @@ public:
 	~MobileAdapterView();
 
 public slots:
+	void setAdapterEnabled(bool enabled);
 	void setType(int type);
 	void setUnmetered(bool unmetered);
 	void setDns1();

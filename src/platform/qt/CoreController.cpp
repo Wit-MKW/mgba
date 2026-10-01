@@ -12,6 +12,8 @@
 #include "MultiplayerController.h"
 #include "Override.h"
 
+#include <cstring>
+
 #include <QAbstractButton>
 #include <QDateTime>
 #include <QHostAddress>
@@ -48,6 +50,11 @@ CoreController::CoreController(mCore* core, QObject* parent)
 	m_threadContext.core = core;
 	m_threadContext.userData = this;
 	updateROMInfo();
+
+#ifdef USE_LIBMOBILE
+	memset(&m_gbmobile, 0, sizeof(m_gbmobile));
+	memset(&m_mobile, 0, sizeof(m_mobile));
+#endif
 
 #ifdef M_CORE_GBA
 	GBASIODolphinCreate(&m_dolphin);
@@ -492,6 +499,11 @@ void CoreController::start() {
 
 void CoreController::stop() {
 	setSync(false);
+#ifdef USE_LIBMOBILE
+	if (getMobileAdapter()->adapter) {
+		saveMobileAdapterConfig();
+	}
+#endif
 #ifdef ENABLE_DEBUGGERS
 	if (m_malController) {
 		m_malController->stop();
@@ -1141,6 +1153,12 @@ void CoreController::detachMobileAdapter() {
 		GB* gb = static_cast<GB*>(m_threadContext.core->board);
 		GBSIOSetDriver(&gb->sio, nullptr);
 	}
+
+	saveMobileAdapterConfig();
+}
+
+void CoreController::saveMobileAdapterConfig() {
+	Interrupter interrupter(this);
 
 	QFile fconfig(ConfigController::configDir() + "/mobile_config.bin");
 	if (fconfig.open(QIODevice::WriteOnly)) {
